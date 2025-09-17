@@ -1,51 +1,94 @@
 <template>
-    <div class="matches-grid">
-      <div class="match">
-        <h3>Semi-final 1</h3>
-        <p>New Zealand vs Canada</p>
-        <p>19:00, Ashton Gate Stadium</p>
+  <div class="matches-grid">
+    <div 
+      v-for="match in matches" 
+      :key="match.title" 
+      class="match"
+    >
+      <h3>{{ match.title }}</h3>
+      <p>{{ match.teams }}</p>
+      <p>{{ match.time }}, {{ match.stadium }}</p>
+      <div v-if="match.weather">
+        <p>Weather: {{ match.weather.temp }}°C, {{ match.weather.condition }}</p>
+        <p>Wind: {{ match.weather.wind }} kph</p>
       </div>
-      <div class="match">
-        <h3>Semi-final 2</h3>
-        <p>France vs England</p>
-        <p>15:30, Ashton Gate Stadium</p>
-      </div>
-  
-      <!-- Bronze and Final side by side -->
-      <div class="match">
-        <h3>Bronze Final</h3>
-        <p>Runner-Up SF1 vs Runner-Up SF2</p>
-        <p>12:30, Allianz Stadium</p>
-      </div>
-      <div class="match">
-        <h3>Final</h3>
-        <p>Winner SF1 vs Winner SF2</p>
-        <p>16:00, Allianz Stadium</p>
+      <div v-else>
+        <p>Loading weather...</p>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'Matches'
+  </div>
+</template>
+
+<script>
+import { getCurrentWeather } from '@/api/weatherApi'
+
+export default {
+  name: 'Matches',
+  data() {
+    return {
+      matches: [
+        {
+          title: 'Semi-final 1',
+          teams: 'New Zealand vs Canada',
+          time: 'Friday 19/9 19:00',
+          stadium: 'Ashton Gate Stadium',
+          city: 'Bristol',
+          weather: null
+        },
+        {
+          title: 'Semi-final 2',
+          teams: 'France vs England',
+          time: 'Saturday 20/9 15:30',
+          stadium: 'Ashton Gate Stadium',
+          city: 'Bristol',
+          weather: null
+        },
+        {
+          title: 'Bronze Final',
+          teams: 'Runner-Up SF1 vs Runner-Up SF2',
+          time: 'Sunday 28/9 12:30',
+          stadium: 'Allianz Stadium',
+          city: 'London',
+          weather: null
+        },
+        {
+          title: 'Final',
+          teams: 'Winner SF1 vs Winner SF2',
+          time: 'Sunday 28/9 16:00',
+          stadium: 'Allianz Stadium',
+          city: 'London',
+          weather: null
+        }
+      ]
+    }
+  },
+  async mounted() {
+    // Fetch weather for each match in parallel
+    const results = await Promise.all(
+      this.matches.map(async match => {
+        const weather = await getCurrentWeather(match.city)
+        return { ...match, weather }
+      })
+    )
+    this.matches = results
   }
-  </script>
-  
-  <style>
-  .matches-grid { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 20px; 
-    max-width: 600px; 
-    margin: 20px auto; 
-  }
-  .match { 
-    text-align: center; 
-    padding: 10px; 
-    border-radius: 8px; 
-    font-weight: bold; 
-    background-color: #007bff; /* Blue for all matches */
-    color: white;
-  }
-  </style>
-  
+}
+</script>
+
+<style>
+.matches-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 20px; 
+  max-width: 600px; 
+  margin: 20px auto; 
+}
+.match { 
+  text-align: center; 
+  padding: 10px; 
+  border-radius: 8px; 
+  font-weight: bold; 
+  background-color: #007bff; 
+  color: white;
+}
+</style>

@@ -3,7 +3,8 @@
     <div class="match">
       <h3>{{ match.name }}</h3>
       <p>{{ match.teams }}</p>
-      <p>{{ match.time }}, {{ match.stadium }}</p>
+      <p>{{ match.time }}</p>
+      <p>{{ match.stadium }}</p>
     </div>
   </template>
   
