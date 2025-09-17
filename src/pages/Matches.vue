@@ -46,7 +46,7 @@ export default {
         {
           title: 'Bronze Final',
           teams: 'Runner-Up SF1 vs Runner-Up SF2',
-          time: 'Sunday 28/9 12:30',
+          time: 'Saturday 27/9 12:30',
           stadium: 'Allianz Stadium',
           city: 'London',
           weather: null
@@ -54,7 +54,7 @@ export default {
         {
           title: 'Final',
           teams: 'Winner SF1 vs Winner SF2',
-          time: 'Sunday 28/9 16:00',
+          time: 'Saturday 27/9 16:00',
           stadium: 'Allianz Stadium',
           city: 'London',
           weather: null
