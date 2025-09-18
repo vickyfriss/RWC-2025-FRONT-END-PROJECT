@@ -8,9 +8,11 @@
       <h3>{{ match.title }}</h3>
       <p>{{ match.teams }}</p>
       <p>{{ match.time }}, {{ match.stadium }}</p>
+
       <div v-if="match.weather">
         <p>Weather: {{ match.weather.temp }}°C, {{ match.weather.condition }}</p>
         <p>Wind: {{ match.weather.wind }} kph</p>
+        <p>Rain chance: {{ match.weather.rain }}%</p>
       </div>
       <div v-else>
         <p>Loading weather...</p>
@@ -20,7 +22,21 @@
 </template>
 
 <script>
-import { getCurrentWeather } from '@/api/weatherApi'
+import { getForecastWeather } from '@/api/weatherApi'
+
+/**
+ * Converts a match time string like "Friday 19/9 19:00"
+ * into { date: "YYYY-MM-DD", hour: Number }
+ */
+function parseMatchTime(timeString) {
+  const parts = timeString.split(' '); // ["Friday", "19/9", "19:00"]
+  const [day, month] = parts[1].split('/').map(Number);
+  const [hours] = parts[2].split(':').map(Number);
+  const year = 2025; // RWC year
+
+  const date = `${year}-${month.toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}`;
+  return { date, hour: hours };
+}
 
 export default {
   name: 'Matches',
@@ -32,7 +48,6 @@ export default {
           teams: 'New Zealand vs Canada',
           time: 'Friday 19/9 19:00',
           stadium: 'Ashton Gate Stadium',
-          city: 'Bristol',
           weather: null
         },
         {
@@ -40,7 +55,6 @@ export default {
           teams: 'France vs England',
           time: 'Saturday 20/9 15:30',
           stadium: 'Ashton Gate Stadium',
-          city: 'Bristol',
           weather: null
         },
         {
@@ -48,7 +62,6 @@ export default {
           teams: 'Runner-Up SF1 vs Runner-Up SF2',
           time: 'Saturday 27/9 12:30',
           stadium: 'Allianz Stadium',
-          city: 'London',
           weather: null
         },
         {
@@ -56,7 +69,6 @@ export default {
           teams: 'Winner SF1 vs Winner SF2',
           time: 'Saturday 27/9 16:00',
           stadium: 'Allianz Stadium',
-          city: 'London',
           weather: null
         }
       ]
@@ -66,11 +78,12 @@ export default {
     // Fetch weather for each match in parallel
     const results = await Promise.all(
       this.matches.map(async match => {
-        const weather = await getCurrentWeather(match.city)
-        return { ...match, weather }
+        const { date, hour } = parseMatchTime(match.time);
+        const weather = await getForecastWeather(match.stadium, date, hour);
+        return { ...match, weather };
       })
-    )
-    this.matches = results
+    );
+    this.matches = results;
   }
 }
 </script>
@@ -80,15 +93,16 @@ export default {
   display: grid; 
   grid-template-columns: 1fr 1fr; 
   gap: 20px; 
-  max-width: 600px; 
+  max-width: 800px; 
   margin: 20px auto; 
 }
 .match { 
   text-align: center; 
-  padding: 10px; 
+  padding: 15px; 
   border-radius: 8px; 
   font-weight: bold; 
   background-color: #007bff; 
   color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 </style>
