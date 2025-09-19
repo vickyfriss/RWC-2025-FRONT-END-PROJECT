@@ -2,12 +2,13 @@
     <div class="venue-map">
       <!-- Click-to-open dropdown -->
       <div class="search-bar">
-        <div class="dropdown-wrapper" @click="toggleDropdown">
+        <div class="dropdown-wrapper">
           <input
             type="text"
-            v-model="searchQuery"
+            :value="selectedVenue ? `${selectedVenue.city} - ${selectedVenue.stadium}` : ''"
             placeholder="Select city or stadium..."
             readonly
+            @click="toggleDropdown"
           />
           <ul v-if="showDropdown" class="dropdown">
             <li
@@ -81,7 +82,7 @@
         mapCenter: [52.3555, -1.1743],
         markerRefs: {},       // stores Leaflet marker objects
         showDropdown: false,  // controls dropdown visibility
-        searchQuery: "",      // shows selected venue
+        selectedVenue: null,  // stores selected venue
       };
     },
     methods: {
@@ -92,18 +93,17 @@
         this.showDropdown = !this.showDropdown;
       },
       selectVenue(venue) {
+        // 1️⃣ Update selected venue immediately
+        this.selectedVenue = venue;
+  
+        // 2️⃣ Zoom map & open popup
         const map = this.$refs.mapRef.mapObject;
-        if (!map) return;
+        if (map) map.setView(venue.coords, 12);
   
-        // Zoom to the venue
-        map.setView(venue.coords, 12);
-  
-        // Open popup like a real click
         const marker = this.markerRefs[venue.city];
         if (marker) marker.fire("click");
   
-        // Update input and close dropdown
-        this.searchQuery = `${venue.city} - ${venue.stadium}`;
+        // 3️⃣ Close dropdown
         this.showDropdown = false;
       },
     },
