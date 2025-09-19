@@ -1,13 +1,34 @@
 <template>
     <div class="venue-map">
+      <!-- Click-to-open dropdown -->
+      <div class="search-bar">
+        <div class="dropdown-wrapper" @click="toggleDropdown">
+          <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Select city or stadium..."
+            readonly
+          />
+          <ul v-if="showDropdown" class="dropdown">
+            <li
+              v-for="venue in venues"
+              :key="venue.city"
+              @mousedown.prevent="selectVenue(venue)"
+            >
+              {{ venue.city }} - {{ venue.stadium }}
+            </li>
+          </ul>
+        </div>
+      </div>
+  
+      <!-- Map -->
       <l-map
         ref="mapRef"
-        style="height: 600px; width: 100%;"
+        style="height: 500px; width: 100%;"
         :zoom="6"
         :center="mapCenter"
         :scroll-wheel-zoom="false"
       >
-        <!-- Base map -->
         <l-tile-layer
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
@@ -15,19 +36,12 @@
           maxZoom="20"
         />
   
-        <!-- England GeoJSON layer -->
-        <l-geo-json
-          v-if="england"
-          :geojson="england"
-          :options-style="styleEngland"
-          @add="fitToEngland"
-        />
-  
         <!-- Stadium markers -->
         <l-marker
           v-for="venue in venues"
           :key="venue.city"
           :lat-lng="venue.coords"
+          @ready="registerMarker(venue.city, $event)"
         >
           <l-popup>
             <div class="popup-content">
@@ -46,7 +60,6 @@
                   Link to official page
                 </a>
               </p>
-              <!-- Stadium image -->
               <div class="stadium-image">
                 <img v-if="venue.image" :src="venue.image" :alt="venue.stadium" />
               </div>
@@ -65,34 +78,35 @@
     data() {
       return {
         venues,
-        mapCenter: [52.3555, -1.1743], // roughly central England
-        england: null
+        mapCenter: [52.3555, -1.1743],
+        markerRefs: {},       // stores Leaflet marker objects
+        showDropdown: false,  // controls dropdown visibility
+        searchQuery: "",      // shows selected venue
       };
     },
-    async created() {
-      try {
-        const res = await fetch("/data/england.geojson");
-        this.england = await res.json();
-      } catch (err) {
-        console.error("Failed to load England GeoJSON:", err);
-      }
-    },
     methods: {
-      styleEngland(feature) {
-        return {
-          color: "#d32f2f",
-          weight: 2,
-          fillColor: "#d32f2f",
-          fillOpacity: 0.5
-        };
+      registerMarker(city, marker) {
+        this.markerRefs[city] = marker;
       },
-      fitToEngland(e) {
+      toggleDropdown() {
+        this.showDropdown = !this.showDropdown;
+      },
+      selectVenue(venue) {
         const map = this.$refs.mapRef.mapObject;
-        if (map && e.target) {
-          map.fitBounds(e.target.getBounds(), { padding: [20, 20] });
-        }
-      }
-    }
+        if (!map) return;
+  
+        // Zoom to the venue
+        map.setView(venue.coords, 12);
+  
+        // Open popup like a real click
+        const marker = this.markerRefs[venue.city];
+        if (marker) marker.fire("click");
+  
+        // Update input and close dropdown
+        this.searchQuery = `${venue.city} - ${venue.stadium}`;
+        this.showDropdown = false;
+      },
+    },
   };
   </script>
   
@@ -101,11 +115,52 @@
     margin: 20px 0;
   }
   
-  /* Force all popup content left-aligned and same width */
+  .search-bar {
+    position: relative;
+    width: 100%;
+  }
+  
+  .dropdown-wrapper {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .dropdown-wrapper input {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+  
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 9999; /* ensures it's above the map */
+  }
+  
+  .dropdown li {
+    padding: 6px 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+  }
+  
+  .dropdown li:hover {
+    background-color: #f0f0f0;
+  }
+  
   .popup-content {
     font-size: 0.9rem;
     text-align: left;
-    width: 250px;       /* fixed width for uniformity */
+    width: 250px;
     box-sizing: border-box;
   }
   
@@ -114,7 +169,6 @@
   .popup-content ul,
   .popup-content li,
   .popup-content a {
-    text-align: left;
     margin: 0 0 5px 0;
     padding: 0;
   }
@@ -131,7 +185,6 @@
     display: inline-block;
   }
   
-  /* Stadium image styling */
   .stadium-image {
     margin-top: 10px;
     text-align: center;
@@ -139,7 +192,7 @@
   
   .stadium-image img {
     max-width: 100%;
-    max-height: 80px; /* small image */
+    max-height: 80px;
     object-fit: cover;
     border-radius: 4px;
   }
