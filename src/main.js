@@ -40,3 +40,7 @@ app.component("LPopup", LPopup);
 app.use(router);
 app.use(vuetify);
 app.mount("#app");
+
+import { LGeoJson } from "@vue-leaflet/vue-leaflet";
+app.component("LGeoJson", LGeoJson);
+
