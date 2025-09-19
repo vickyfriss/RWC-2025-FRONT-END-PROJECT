@@ -157,44 +157,47 @@
     background-color: #f0f0f0;
   }
   
-  .popup-content {
+  /* Force all popup content left-aligned and same width */
+    .popup-content {
     font-size: 0.9rem;
     text-align: left;
     width: 250px;
     box-sizing: border-box;
-  }
-  
-  .popup-content h3,
-  .popup-content p,
-  .popup-content ul,
-  .popup-content li,
-  .popup-content a {
+    }
+
+    .popup-content h3,
+    .popup-content p,
+    .popup-content ul,
+    .popup-content li,
+    .popup-content a {
+    text-align: left;
     margin: 0 0 5px 0;
     padding: 0;
-  }
-  
-  .popup-content ul {
+    }
+
+    .popup-content ul {
     padding-left: 15px;
     margin: 5px 0;
     list-style: disc;
-  }
-  
-  .popup-content a {
+    }
+
+    .popup-content a {
     text-decoration: underline;
     color: #1976d2;
     display: inline-block;
-  }
-  
-  .stadium-image {
+    }
+
+    /* Stadium image styling */
+    .stadium-image {
     margin-top: 10px;
     text-align: center;
-  }
-  
-  .stadium-image img {
+    }
+
+    .stadium-image img {
     max-width: 100%;
     max-height: 80px;
     object-fit: cover;
     border-radius: 4px;
-  }
+    }
   </style>
   
