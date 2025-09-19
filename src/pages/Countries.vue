@@ -91,21 +91,26 @@
   
   /* Flag and country inline */
   .flag-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    justify-content: flex-start;
-  }
-  
-  .inline-flag {
-    height: 18px;
-    width: auto;
-  }
-  
-  .team-name {
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-start;
+}
+
+/* Force flag box size */
+.inline-flag {
+  width: 28px;   /* fixed width */
+  height: 18px;  /* fixed height */
+  object-fit: contain;
+  flex-shrink: 0; /* prevent shrinking */
+}
+
+/* Ensure names always start after the flag box */
+.team-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex: 1;
+}
   
   /* Remove default v-list-item-content padding and centering */
   .v-list-item-content {
