@@ -1,9 +1,9 @@
 <template>
     <v-container class="d-flex justify-center align-center" style="height: 80vh;">
       <v-card width="400">
-        <v-card-title class="text-h5">Login</v-card-title>
+        <v-card-title class="text-h5">Register</v-card-title>
         <v-card-text>
-          <v-form ref="loginForm" @submit.prevent="loginUser">
+          <v-form ref="registerForm" @submit.prevent="registerUser">
             <v-text-field
               v-model="email"
               label="Email"
@@ -16,21 +16,14 @@
               type="password"
               required
             />
-            <v-btn type="submit" color="primary" class="mt-4" block>Login</v-btn>
+            <v-text-field
+              v-model="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              required
+            />
+            <v-btn type="submit" color="primary" class="mt-4" block>Register</v-btn>
           </v-form>
-  
-          <!-- Link to Register -->
-          <p class="mt-2">
-            Don't have an account?
-            <v-btn text color="primary" @click="$router.push('/register')">Register</v-btn>
-          </p>
-  
-          <!-- Back to Home -->
-          <p class="mt-2">
-            <v-btn text color="secondary" @click="$router.push('/')">Back to Home</v-btn>
-          </p>
-  
-          <!-- Error message -->
           <p v-if="errorMessage" class="red--text mt-2">{{ errorMessage }}</p>
         </v-card-text>
       </v-card>
@@ -39,23 +32,30 @@
   
   <script>
   import { auth } from "../firebase";
-  import { signInWithEmailAndPassword } from "firebase/auth";
+  import { createUserWithEmailAndPassword } from "firebase/auth";
   
   export default {
-    name: "Login",
+    name: "Register",
     data() {
       return {
         email: "",
         password: "",
+        confirmPassword: "",
         errorMessage: ""
       };
     },
     methods: {
-      loginUser() {
+      registerUser() {
         this.errorMessage = "";
-        signInWithEmailAndPassword(auth, this.email, this.password)
+  
+        if (this.password !== this.confirmPassword) {
+          this.errorMessage = "Passwords do not match";
+          return;
+        }
+  
+        createUserWithEmailAndPassword(auth, this.email, this.password)
           .then(() => {
-            // Redirect to Home after successful login
+            // Redirect to home after successful registration
             this.$router.push("/");
           })
           .catch((error) => {

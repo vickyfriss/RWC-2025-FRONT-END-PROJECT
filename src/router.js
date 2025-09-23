@@ -2,13 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from './pages/Home.vue';
 import Country from './pages/Country.vue';
 import Login from './pages/Login.vue';
-import Welcome from './pages/Welcome.vue';
+import Register from './pages/Register.vue';
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/country/:name', component: Country, props: route => ({ country: route.params.name }) },
   { path: '/login', component: Login },
-  { path: '/welcome', component: Welcome },
+  { path: '/register', component: Register },
+  { path: '/country/:name', component: Country, props: route => ({ country: route.params.name }) }
 ];
 
 const router = createRouter({
