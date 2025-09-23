@@ -112,6 +112,7 @@ export default {
   },
   methods: {
     goToCountry(name) {
+      // Ensure country pages are accessible without login
       this.$router.push(`/country/${name}`);
     },
     logout() {
