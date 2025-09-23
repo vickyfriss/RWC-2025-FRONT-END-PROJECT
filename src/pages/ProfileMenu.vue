@@ -10,7 +10,7 @@
           <p><strong>Puntos:</strong> {{ playerInfo.points }}</p>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="error" @click="logout">Cerrar sesión</v-btn>
+          <v-btn color="error" @click="logout">Logout</v-btn>
         </v-card-actions>
       </v-card>
     </v-container>

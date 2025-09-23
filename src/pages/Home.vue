@@ -2,7 +2,7 @@
   <v-container>
     <!-- Header -->
     <v-row align="center" class="my-6">
-      <!-- Logo on the left -->
+      <!-- Logo -->
       <v-col cols="auto">
         <a href="https://www.rugbyworldcup.com/2025" target="_blank" rel="noopener">
           <img
@@ -13,7 +13,7 @@
         </a>
       </v-col>
 
-      <!-- Title centered -->
+      <!-- Title -->
       <v-col class="text-center">
         <h1 class="text-h3 font-weight-bold">RUGBY WORLD CUP 2025</h1>
       </v-col>
@@ -21,35 +21,45 @@
       <!-- Login / User Menu -->
       <v-col cols="auto">
         <div v-if="userEmail">
-          <!-- User Menu -->
           <v-menu offset-y>
             <template #activator="{ props }">
-              <v-btn v-bind="props" icon>
-                <v-icon>mdi-account-circle</v-icon>
+              <v-btn v-bind="props" icon color="primary">
+                <v-icon large>mdi-account-circle-outline</v-icon>
               </v-btn>
             </template>
+
             <v-list>
               <v-list-item>
-                <v-list-item-title>{{ userEmail }}</v-list-item-title>
+                <v-list-item-content>
+                  <v-list-item-title>{{ userEmail }}</v-list-item-title>
+                </v-list-item-content>
               </v-list-item>
-              <v-divider></v-divider>
+
+              <v-divider />
+
+              <v-list-item @click="$router.push('/profile')">
+                <v-list-item-title>Profile</v-list-item-title>
+              </v-list-item>
+
               <v-list-item @click="logout">
-                <v-list-item-title>Cerrar sesión</v-list-item-title>
+                <v-list-item-title>Logout</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
         </div>
+
         <div v-else>
-          <!-- Login button -->
-          <v-btn color="primary" @click="$router.push('/login')">Login</v-btn>
+          <v-btn color="primary" @click="$router.push('/login')">
+            Login
+          </v-btn>
         </div>
       </v-col>
     </v-row>
 
-    <!-- Countries Component -->
+    <!-- Countries -->
     <Countries @go-to-country="goToCountry" />
 
-    <!-- Map Component -->
+    <!-- Map Section -->
     <v-row justify="center" class="my-4">
       <h2 class="text-h5 font-weight-bold">Host Cities & Venues</h2>
     </v-row>
@@ -61,7 +71,7 @@
       <p>⚠️ Map unavailable, please check back later.</p>
     </div>
 
-    <!-- Matches Component -->
+    <!-- Matches -->
     <Matches />
   </v-container>
 </template>
