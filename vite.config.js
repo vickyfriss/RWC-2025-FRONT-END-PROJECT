@@ -5,7 +5,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/', // ✅ add this for Netlify
+  base: './', // ← fixed for Netlify
   plugins: [
     vue(),
     vueDevTools(),
