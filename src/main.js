@@ -2,6 +2,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
+// ✅ Tailwind CSS
+import "./assets/tailwind.css";
+
 // Vuetify
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
@@ -10,7 +13,7 @@ import * as directives from "vuetify/directives";
 
 // Leaflet (maps library)
 import "leaflet/dist/leaflet.css";
-import { LMap, LTileLayer, LMarker, LPopup } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LMarker, LPopup, LGeoJson } from "@vue-leaflet/vue-leaflet";
 import L from "leaflet";
 
 // Import marker assets (Vite compatible)
@@ -31,17 +34,13 @@ const vuetify = createVuetify({ components, directives });
 
 const app = createApp(App);
 
-// Register Global Leaflet components (to use them directly in templates without importing them in every file)
+// Register Global Leaflet components
 app.component("LMap", LMap);
 app.component("LTileLayer", LTileLayer);
 app.component("LMarker", LMarker);
 app.component("LPopup", LPopup);
+app.component("LGeoJson", LGeoJson);
 
 app.use(router);
 app.use(vuetify);
 app.mount("#app");
-
-// geoJson info - haven't used it in the app yet
-import { LGeoJson } from "@vue-leaflet/vue-leaflet";
-app.component("LGeoJson", LGeoJson);
-
