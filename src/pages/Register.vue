@@ -4,24 +4,34 @@
       <v-card-title class="text-h5">Register</v-card-title>
       <v-card-text>
         <v-form ref="registerForm" @submit.prevent="registerUser">
+
+          <!-- Email field -->
           <v-text-field
             v-model="email"
             label="Email"
             type="email"
+            :class="{'field-invalid': email && !isEmailValid}"
             required
           />
+
+          <!-- Password field -->
           <v-text-field
             v-model="password"
             label="Password"
             type="password"
+            :class="{'field-invalid': password && !isPasswordValid}"
             required
           />
+
+          <!-- Confirm Password field -->
           <v-text-field
             v-model="confirmPassword"
             label="Confirm Password"
             type="password"
+            :class="{'field-invalid': confirmPassword && !doPasswordsMatch}"
             required
           />
+
           <v-btn type="submit" color="primary" class="mt-4" block>Register</v-btn>
         </v-form>
 
@@ -57,18 +67,44 @@ export default {
       errorMessage: ""
     };
   },
+  computed: {
+    // Basic email validation
+    isEmailValid() {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(this.email);
+    },
+    // Password validation
+    isPasswordValid() {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+      return passwordRegex.test(this.password);
+    },
+    // Confirm password matches
+    doPasswordsMatch() {
+      return this.password === this.confirmPassword;
+    }
+  },
   methods: {
     registerUser() {
       this.errorMessage = "";
 
-      if (this.password !== this.confirmPassword) {
+      if (!this.isEmailValid) {
+        this.errorMessage = "Invalid email format";
+        return;
+      }
+
+      if (!this.isPasswordValid) {
+        this.errorMessage =
+          "Password must be at least 8 characters and include uppercase, lowercase, number, and special character";
+        return;
+      }
+
+      if (!this.doPasswordsMatch) {
         this.errorMessage = "Passwords do not match";
         return;
       }
 
       createUserWithEmailAndPassword(auth, this.email, this.password)
         .then(() => {
-          // Redirect to home after successful registration
           this.$router.push("/");
         })
         .catch((error) => {
@@ -78,3 +114,10 @@ export default {
   }
 };
 </script>
+
+<style>
+/* Red background for invalid input fields */
+.field-invalid input {
+  background-color: #ffe6e6 !important;
+}
+</style>
