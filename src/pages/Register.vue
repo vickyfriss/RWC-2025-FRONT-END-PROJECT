@@ -1,11 +1,10 @@
 <template>
   <v-container class="d-flex justify-center align-center" style="height: 80vh;">
-    <v-card width="400">
-      <v-card-title class="text-h5">Register</v-card-title>
+    <v-card width="400" class="pa-4">
+      <v-card-title class="text-h5 justify-center">Register</v-card-title>
       <v-card-text>
         <v-form ref="registerForm" @submit.prevent="registerUser">
-
-          <!-- Email field -->
+          <!-- Email -->
           <v-text-field
             v-model="email"
             label="Email"
@@ -13,8 +12,11 @@
             :class="{'field-invalid': email && !isEmailValid}"
             required
           />
+          <p v-if="email && !isEmailValid" class="field-error">
+            Invalid email format
+          </p>
 
-          <!-- Password field -->
+          <!-- Password -->
           <v-text-field
             v-model="password"
             label="Password"
@@ -22,8 +24,11 @@
             :class="{'field-invalid': password && !isPasswordValid}"
             required
           />
+          <p v-if="password && !isPasswordValid" class="field-error">
+            Password must be at least 8 characters and include uppercase, lowercase, number, and special character
+          </p>
 
-          <!-- Confirm Password field -->
+          <!-- Confirm Password -->
           <v-text-field
             v-model="confirmPassword"
             label="Confirm Password"
@@ -31,23 +36,27 @@
             :class="{'field-invalid': confirmPassword && !doPasswordsMatch}"
             required
           />
+          <p v-if="confirmPassword && !doPasswordsMatch" class="field-error">
+            Passwords do not match
+          </p>
 
-          <v-btn type="submit" color="primary" class="mt-4" block>Register</v-btn>
+          <!-- Register button -->
+          <v-btn type="submit" color="primary" block class="mt-4">Register</v-btn>
+
+          <!-- Login button with message -->
+          <div class="text-center mt-4">
+            <p class="mb-2">Already have an account?</p>
+            <v-btn color="primary" block @click="$router.push('/login')">Login</v-btn>
+          </div>
+
+          <!-- Back to Home button -->
+          <div class="text-center mt-3">
+            <v-btn color="primary" block @click="$router.push('/')">Back to Home</v-btn>
+          </div>
+
+          <!-- General error message -->
+          <p v-if="errorMessage" class="red--text mt-3 text-center">{{ errorMessage }}</p>
         </v-form>
-
-        <!-- Link to Login -->
-        <p class="mt-2">
-          Already have an account?
-          <v-btn text color="primary" @click="$router.push('/login')">Login</v-btn>
-        </p>
-
-        <!-- Back to Home -->
-        <p class="mt-2">
-          <v-btn text color="secondary" @click="$router.push('/')">Back to Home</v-btn>
-        </p>
-
-        <!-- Error message -->
-        <p v-if="errorMessage" class="red--text mt-2">{{ errorMessage }}</p>
       </v-card-text>
     </v-card>
   </v-container>
@@ -68,17 +77,14 @@ export default {
     };
   },
   computed: {
-    // Basic email validation
     isEmailValid() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return emailRegex.test(this.email);
     },
-    // Password validation
     isPasswordValid() {
       const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
       return passwordRegex.test(this.password);
     },
-    // Confirm password matches
     doPasswordsMatch() {
       return this.password === this.confirmPassword;
     }
@@ -87,21 +93,9 @@ export default {
     registerUser() {
       this.errorMessage = "";
 
-      if (!this.isEmailValid) {
-        this.errorMessage = "Invalid email format";
-        return;
-      }
-
-      if (!this.isPasswordValid) {
-        this.errorMessage =
-          "Password must be at least 8 characters and include uppercase, lowercase, number, and special character";
-        return;
-      }
-
-      if (!this.doPasswordsMatch) {
-        this.errorMessage = "Passwords do not match";
-        return;
-      }
+      if (!this.isEmailValid) return;
+      if (!this.isPasswordValid) return;
+      if (!this.doPasswordsMatch) return;
 
       createUserWithEmailAndPassword(auth, this.email, this.password)
         .then(() => {
@@ -116,8 +110,21 @@ export default {
 </script>
 
 <style>
-/* Red background for invalid input fields */
+/* Red background for invalid input */
 .field-invalid input {
   background-color: #ffe6e6 !important;
+}
+
+/* Field-specific error messages */
+.field-error {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Optional: make all buttons same height */
+.v-btn {
+  height: 40px;
 }
 </style>
