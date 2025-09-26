@@ -1,6 +1,4 @@
-// src/api/weatherApi.js
-
-const API_KEY = 'cec7b3dfcb844b5783f190332251709'; // keep or move to env later
+const API_KEY = 'cec7b3dfcb844b5783f190332251709'; 
 const BASE_URL = 'https://api.weatherapi.com/v1';
 
 // Stadium to City names
@@ -16,15 +14,24 @@ function stadiumToCity(location) {
 
 export async function getForecastWeather(cityOrStadium, date, hour) {
   const city = stadiumToCity(cityOrStadium);
+
+  // Determine if date is in the past
+  const today = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  const isPast = date < today;
+
+  const endpoint = isPast ? 'history.json' : 'forecast.json';
+
   try {
     const res = await fetch(
-      `${BASE_URL}/forecast.json?key=${API_KEY}&q=${encodeURIComponent(city)}&dt=${date}`
+      `${BASE_URL}/${endpoint}?key=${API_KEY}&q=${encodeURIComponent(city)}&dt=${date}`
     );
-    if (!res.ok) throw new Error('Failed to fetch forecast');
+    if (!res.ok) throw new Error('Failed to fetch weather');
     const data = await res.json();
 
-    // Find closest forecast hour
-    const forecast = data.forecast.forecastday[0].hour.find(
+    // Pick hourly data
+    const hours = isPast ? data.forecast.forecastday[0].hour : data.forecast.forecastday[0].hour;
+
+    const forecast = hours.find(
       h => h.time.includes(`${date} ${hour.toString().padStart(2, '0')}:00`)
     );
 
@@ -38,7 +45,7 @@ export async function getForecastWeather(cityOrStadium, date, hour) {
       rain: forecast.chance_of_rain
     };
   } catch (error) {
-    console.error('Error fetching forecast:', error);
+    console.error('Error fetching weather:', error);
     return null;
   }
 }
