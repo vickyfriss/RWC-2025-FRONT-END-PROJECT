@@ -33,4 +33,21 @@ describe('My Vue App', () => {
     cy.get('.leaflet-tile-loaded').should('have.length.greaterThan', 0) // at least one map tile loaded
   })
 
+  it('renders all matches with weather info', () => {
+    cy.get('.matches-grid').should('exist') // Check the matches grid exists
+    cy.contains('.match h3', 'Semi-final 1').should('exist')     // Optionally, check 2 matches by title
+    cy.contains('.match h3', 'Final').should('exist')
+  
+    cy.get('.matches-grid .match').each(($match) => {       // Check that weather info is present in matches
+      cy.wrap($match)
+        .find('div p', { timeout: 60000 })                   // wait up to 60s for p elements
+        .should(($p) => {
+          const text = $p.text()
+          expect(text).to.match(/Weather:|Wind:|Rain chance:/)
+        })
+    })
+  })
+  
+  
+
 })
