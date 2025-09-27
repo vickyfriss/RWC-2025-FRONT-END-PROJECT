@@ -33,21 +33,25 @@ describe('My Vue App', () => {
     cy.get('.leaflet-tile-loaded').should('have.length.greaterThan', 0) // at least one map tile loaded
   })
 
-  it('renders all matches with weather info', () => {
+  it('renders all matches', () => {
     cy.get('.matches-grid').should('exist') // Check the matches grid exists
-    cy.contains('.match h3', 'Semi-final 1').should('exist')     // Optionally, check 2 matches by title
+    cy.contains('.match h3', 'Semi-final 1').should('exist')
     cy.contains('.match h3', 'Final').should('exist')
-  
-    cy.get('.matches-grid .match').each(($match) => {       // Check that weather info is present in matches
-      cy.wrap($match)
-        .find('div p', { timeout: 60000 })                   // wait up to 60s for p elements
-        .should(($p) => {
-          const text = $p.text()
-          expect(text).to.match(/Weather:|Wind:|Rain chance:/)
-        })
+  })
+
+  it('makes 4 weather API calls (one per match)', () => {
+    // Intercept both forecast and history API calls
+    cy.intercept('GET', '**/(forecast|history).json*').as('getWeather')
+
+    cy.visit('/')
+
+    // Wait for 4 requests to complete
+    cy.wait(['@getWeather', '@getWeather', '@getWeather', '@getWeather'], { timeout: 60000 })
+
+    // Check there were exactly 4 total calls
+    cy.get('@getWeather.all').then((calls) => {
+      expect(calls.length).to.eq(4)
     })
   })
-  
-  
 
 })

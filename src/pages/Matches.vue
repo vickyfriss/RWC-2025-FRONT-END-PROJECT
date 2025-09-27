@@ -59,14 +59,14 @@ export default {
         },
         {
           title: 'Bronze Final',
-          teams: 'Runner-Up SF1 vs Runner-Up SF2',
+          teams: 'New Zealand vs France',
           time: 'Saturday 27/9 12:30',
           stadium: 'Allianz Stadium',
           weather: null
         },
         {
           title: 'Final',
-          teams: 'Winner SF1 vs Winner SF2',
+          teams: 'England vs Canada',
           time: 'Saturday 27/9 16:00',
           stadium: 'Allianz Stadium',
           weather: null
