@@ -1,6 +1,10 @@
 describe('My Vue App', () => {
 
   beforeEach(() => {
+    // Intercept weather API calls before visiting
+    cy.intercept('GET', '**/forecast.json*').as('getForecast')
+    cy.intercept('GET', '**/history.json*').as('getHistory')
+
     cy.visit('/')  // visit home page before every test
   })
 
@@ -38,19 +42,17 @@ describe('My Vue App', () => {
     cy.contains('.match h3', 'Semi-final 1').should('exist')
     cy.contains('.match h3', 'Final').should('exist')
   })
-
+  
   it('makes 4 weather API calls (one per match)', () => {
-    // Intercept both forecast and history API calls
-    cy.intercept('GET', '**/(forecast|history).json*').as('getWeather')
+    // Wait until at least 4 calls (forecast or history) are finished
+    cy.wait(['@getForecast', '@getHistory', '@getForecast', '@getHistory'], { timeout: 60000 })
 
-    cy.visit('/')
-
-    // Wait for 4 requests to complete
-    cy.wait(['@getWeather', '@getWeather', '@getWeather', '@getWeather'], { timeout: 60000 })
-
-    // Check there were exactly 4 total calls
-    cy.get('@getWeather.all').then((calls) => {
-      expect(calls.length).to.eq(4)
+    // Check total calls
+    cy.get('@getForecast.all').then(forecasts => {
+      cy.get('@getHistory.all').then(histories => {
+        const total = (forecasts?.length || 0) + (histories?.length || 0)
+        expect(total).to.eq(4)
+      })
     })
   })
 
