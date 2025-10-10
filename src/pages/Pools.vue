@@ -46,7 +46,7 @@
                 :class="['team-row', shouldHighlight(team) ? 'highlight' : '']"
               >
                 <div class="team-col">
-                  <img :src="team.flag" alt="" class="inline-flag" />
+                  <img :src="team.flag" class="inline-flag" />
                   <span class="team-name">{{ team.name }}</span>
                 </div>
                 <span class="stat-col">{{ team.wins }}</span>
@@ -55,12 +55,14 @@
               </div>
             </div>
 
+            <!-- View Details -->
             <v-btn
               text
               small
               color="primary"
               class="mt-2"
               :to="`/pool/${group.name}`"
+              router
             >
               View Details
             </v-btn>
@@ -89,9 +91,9 @@ export default {
   },
   computed: {
     sortedGroups() {
-      return this.groups.map((group) => ({
+      return this.groups.map(group => ({
         ...group,
-        teams: [...group.teams].sort((a, b) => b.points - a.points),
+        teams: [...group.teams].sort((a, b) => b.points - a.points)
       }));
     },
   },
@@ -136,7 +138,9 @@ export default {
 .teams-table {
   display: flex;
   flex-direction: column;
-  border: 1px solid #ccc;
+  width: 100%;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -145,9 +149,10 @@ export default {
 .teams-header,
 .team-row {
   display: grid;
-  grid-template-columns: minmax(170px, 2fr) 1fr 1fr 1fr;
+  grid-template-columns: minmax(160px, 1fr) 60px 60px 60px;
   align-items: center;
   justify-items: start;
+  gap: 0;
   padding: 6px 10px;
   border-bottom: 1px solid #ccc;
   text-align: left;
@@ -163,32 +168,27 @@ export default {
   transition: background-color 0.2s ease;
 }
 
-/* Team column (flag + name) */
 .team-col {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-width: 0;
+  gap: 10px;
 }
 
 .inline-flag {
   width: 22px;
   height: 14px;
-  object-fit: cover;
+  object-fit: contain;
   flex-shrink: 0;
   margin-left: 0;
 }
 
 .team-name {
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .stat-col {
   text-align: left;
-  padding-left: 4px;
-  width: 100%;
+  width: 60px;
 }
 
 .team-points {
@@ -200,25 +200,20 @@ export default {
 .highlight {
   background-color: #1976d2 !important;
   color: white;
-  border-radius: 0;
 }
 
 /* Responsive */
 @media (max-width: 1280px) {
   .teams-header,
   .team-row {
-    grid-template-columns: minmax(150px, 2fr) 1fr 1fr 1fr;
-  }
-  .inline-flag {
-    width: 18px;
-    height: 12px;
+    grid-template-columns: minmax(140px, 1fr) 50px 50px 50px;
   }
 }
 
 @media (max-width: 768px) {
   .teams-header,
   .team-row {
-    grid-template-columns: minmax(120px, 2fr) 0.8fr 0.8fr 0.8fr;
+    grid-template-columns: minmax(120px, 1fr) 40px 40px 40px;
     font-size: 0.75rem;
   }
 }
