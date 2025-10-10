@@ -1,25 +1,41 @@
 <template>
-  <v-container>
+  <v-container fluid class="pa-0 ma-0 w-full">
     <!-- Header -->
-    <v-row align="center" class="my-6">
+    <v-row
+      align="center"
+      justify="space-between"
+      class="my-6 px-6 flex-wrap"
+    >
       <!-- Logo -->
-      <v-col cols="auto">
-        <a href="https://www.rugbyworldcup.com/2025" target="_blank" rel="noopener">
+      <v-col cols="12" sm="4" md="3" lg="2" class="text-center text-sm-left">
+        <a
+          href="https://www.rugbyworldcup.com/2025"
+          target="_blank"
+          rel="noopener"
+        >
           <img
             src="https://upload.wikimedia.org/wikipedia/en/4/4f/2025_Women%27s_RWC_Logo.svg"
             alt="Women Rugby World Cup Logo"
-            style="max-width: 80px;"
+            class="logo-img"
           />
         </a>
       </v-col>
 
       <!-- Title -->
-      <v-col class="text-center">
-        <h1 class="text-h3 font-weight-bold">RUGBY WORLD CUP 2025</h1>
+      <v-col cols="12" sm="6" md="6" lg="8" class="text-center">
+        <h1 class="text-h4 text-sm-h3 font-weight-bold mb-0">
+          RUGBY WORLD CUP 2025
+        </h1>
       </v-col>
 
       <!-- Login / User Menu -->
-      <v-col cols="auto">
+      <v-col
+        cols="12"
+        sm="2"
+        md="3"
+        lg="2"
+        class="text-center text-sm-right mt-3 mt-sm-0"
+      >
         <div v-if="userEmail">
           <v-menu offset-y>
             <template #activator="{ props }">
@@ -57,27 +73,41 @@
     </v-row>
 
     <!-- Countries -->
-    <Countries @go-to-country="goToCountry" />
-
-    <!-- Map Section -->
-    <v-row justify="center" class="my-4">
-      <h2 class="text-h5 font-weight-bold">Host Cities & Venues</h2>
+    <v-row class="mx-0">
+      <v-col cols="12" class="pa-0">
+        <Countries @go-to-country="goToCountry" />
+      </v-col>
     </v-row>
 
-    <div v-if="mapAvailable">
-      <Map />
-    </div>
-    <div v-else class="text-center my-4">
-      <p>⚠️ Map unavailable, please check back later.</p>
-    </div>
+    <!-- Map Section -->
+    <v-row justify="center" class="my-8 px-4">
+      <h2 class="text-h5 font-weight-bold text-center">
+        Host Cities & Venues
+      </h2>
+    </v-row>
+
+    <v-row class="mx-0">
+      <v-col cols="12" class="pa-0">
+        <div v-if="mapAvailable">
+          <Map />
+        </div>
+        <div v-else class="text-center my-4">
+          <p>⚠️ Map unavailable, please check back later.</p>
+        </div>
+      </v-col>
+    </v-row>
 
     <!-- Matches -->
-    <Matches />
+    <v-row class="mx-0">
+      <v-col cols="12" class="pa-0">
+        <Matches />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
-import Countries from "./Countries.vue";
+import Countries from "./Pools.vue";
 import Matches from "./Matches.vue";
 import Map from "./Map.vue";
 import { auth } from "../firebase";
@@ -89,11 +119,11 @@ export default {
   data() {
     return {
       mapAvailable: true,
-      userEmail: ""
+      userEmail: "",
     };
   },
   mounted() {
-    // Map fallback
+    // Handle map load fallback
     try {
       if (!Map) throw new Error("Map component failed to load");
     } catch (e) {
@@ -103,23 +133,47 @@ export default {
 
     // Firebase auth listener
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.userEmail = user.email;
-      } else {
-        this.userEmail = "";
-      }
+      this.userEmail = user ? user.email : "";
     });
   },
   methods: {
     goToCountry(name) {
-      // Ensure country pages are accessible without login
       this.$router.push(`/country/${name}`);
     },
     logout() {
       auth.signOut().then(() => {
         this.userEmail = "";
       });
-    }
-  }
+    },
+  },
 };
 </script>
+
+<style scoped>
+/* Ensure the layout stretches full width */
+.v-container {
+  width: 100%;
+  max-width: 100% !important;
+  padding: 0;
+  margin: 0;
+}
+
+/* Responsive logo */
+.logo-img {
+  max-width: 100px;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 600px) {
+  .logo-img {
+    max-width: 80px;
+  }
+}
+
+/* Header text responsiveness */
+h1 {
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem);
+  text-align: center;
+}
+</style>
