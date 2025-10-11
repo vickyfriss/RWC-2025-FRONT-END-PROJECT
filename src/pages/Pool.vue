@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { groups } from "../PoolsData.js";
+import { groups } from "../assets/Data/PoolsData.js";
 
 export default {
   name: "Pool",

@@ -49,24 +49,23 @@
               <h3>{{ venue.stadium }}</h3>
               <p><strong>City:</strong> {{ venue.city }}</p>
               <p><strong>Capacity:</strong> {{ venue.capacity.toLocaleString() }}</p>
-              <p><strong>Matches:</strong></p>
-              <ul>
-                <li>Pool Stage: {{ venue.matches.poolStage }}</li>
-                <li>Quarter-Finals: {{ venue.matches.quarterFinals }}</li>
-                <li>Semi-Finals: {{ venue.matches.semiFinals }}</li>
-                <li>Final: {{ venue.matches.final }}</li>
-              </ul>
-              <p>
-                <a :href="venue.link" target="_blank" rel="noopener">
-                  Link to official page
-                </a>
-              </p>
               <div class="stadium-image">
                 <img v-if="venue.image" :src="venue.image" :alt="venue.stadium" />
               </div>
+
+              <!-- More Info Button -->
+              <v-btn
+                small
+                color="primary"
+                class="mt-2"
+                @click="$router.push({ name: 'Venue', params: { city: venue.city } })"
+              >
+                More Info
+              </v-btn>
             </div>
           </l-popup>
         </l-marker>
+
       </l-map>
     </div>
   </template>

@@ -28,7 +28,7 @@ export default [
     },
     {
       city: 'London',
-      stadium: 'Twickenham Stadium',
+      stadium: 'Allianz Stadium',
       coords: [51.455990, -0.342329],
       capacity: 82000,
       matches: { poolStage: 0, quarterFinals: 0, semiFinals: 0, final: 2 },
