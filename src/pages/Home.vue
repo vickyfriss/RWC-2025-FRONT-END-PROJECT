@@ -1,112 +1,73 @@
 <template>
-  <v-container fluid class="pa-0 ma-0 w-full">
-    <!-- Header -->
-    <v-row
-      align="center"
-      justify="space-between"
-      class="my-6 px-6 flex-wrap"
-    >
-      <!-- Logo -->
-      <v-col cols="12" sm="4" md="3" lg="2" class="text-center text-sm-left">
-        <a
-          href="https://www.rugbyworldcup.com/2025"
-          target="_blank"
-          rel="noopener"
-        >
-          <img
-            src="https://upload.wikimedia.org/wikipedia/en/4/4f/2025_Women%27s_RWC_Logo.svg"
-            alt="Women Rugby World Cup Logo"
-            class="logo-img"
-          />
-        </a>
-      </v-col>
+  <v-app>
+    <!-- Global Header -->
+    <AppHeader />
 
-      <!-- Title -->
-      <v-col cols="12" sm="6" md="6" lg="8" class="text-center">
-        <h1 class="text-h4 text-sm-h3 font-weight-bold mb-0">
-          RUGBY WORLD CUP 2025
-        </h1>
-      </v-col>
+    <!-- Main content -->
+    <v-main>
+      <v-container fluid class="pa-0">
 
-      <!-- Login / User Menu -->
-      <v-col
-        cols="12"
-        sm="2"
-        md="3"
-        lg="2"
-        class="text-center text-sm-right mt-3 mt-sm-0"
-      >
-        <div v-if="userEmail">
-          <v-menu offset-y>
-            <template #activator="{ props }">
-              <v-btn v-bind="props" icon color="primary">
-                <v-icon large>mdi-account-circle-outline</v-icon>
+        <!-- Hero Section / Title -->
+        <section id="hero" class="hero-section">
+          <v-row justify="center" class="text-center">
+            <v-col cols="12" md="8">
+              <h1 class="hero-title">
+                2025 Women's Rugby World Cup
+              </h1>
+              <p class="hero-subtitle">
+                Discover the pools, matches, and host cities for the biggest tournament of the year.
+              </p>
+              <v-btn color="red darken-2" class="mt-6" large @click="scrollTo('countries')">
+                Explore Pools
               </v-btn>
-            </template>
+            </v-col>
+          </v-row>
+        </section>
 
-            <v-list>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>{{ userEmail }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+        <!-- Countries Section -->
+        <section id="countries" class="section">
+          <v-row class="mx-0">
+            <v-col cols="12" class="pa-0">
+              <Countries @go-to-country="goToCountry" />
+            </v-col>
+          </v-row>
+        </section>
 
-              <v-divider />
+        <!-- Map Section -->
+        <section id="map" class="section">
+          <v-row justify="center" class="my-8 px-4">
+            <h2 class="text-h5 font-weight-bold text-center">
+              Host Cities & Venues
+            </h2>
+          </v-row>
+          <v-row class="mx-0">
+            <v-col cols="12" class="pa-0">
+              <div v-if="mapAvailable">
+                <Map />
+              </div>
+              <div v-else class="text-center my-4">
+                <p>⚠️ Map unavailable, please check back later.</p>
+              </div>
+            </v-col>
+          </v-row>
+        </section>
 
-              <v-list-item @click="$router.push('/profile')">
-                <v-list-item-title>Profile</v-list-item-title>
-              </v-list-item>
+        <!-- Matches Section -->
+        <section id="matches" class="section">
+          <v-row class="mx-0">
+            <v-col cols="12" class="pa-0">
+              <Matches />
+            </v-col>
+          </v-row>
+        </section>
 
-              <v-list-item @click="logout">
-                <v-list-item-title>Logout</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-
-        <div v-else>
-          <v-btn color="primary" @click="$router.push('/login')">
-            Login
-          </v-btn>
-        </div>
-      </v-col>
-    </v-row>
-
-    <!-- Countries -->
-    <v-row class="mx-0">
-      <v-col cols="12" class="pa-0">
-        <Countries @go-to-country="goToCountry" />
-      </v-col>
-    </v-row>
-
-    <!-- Map Section -->
-    <v-row justify="center" class="my-8 px-4">
-      <h2 class="text-h5 font-weight-bold text-center">
-        Host Cities & Venues
-      </h2>
-    </v-row>
-
-    <v-row class="mx-0">
-      <v-col cols="12" class="pa-0">
-        <div v-if="mapAvailable">
-          <Map />
-        </div>
-        <div v-else class="text-center my-4">
-          <p>⚠️ Map unavailable, please check back later.</p>
-        </div>
-      </v-col>
-    </v-row>
-
-    <!-- Matches -->
-    <v-row class="mx-0">
-      <v-col cols="12" class="pa-0">
-        <Matches />
-      </v-col>
-    </v-row>
-  </v-container>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
+import AppHeader from "../components/AppHeader.vue";
 import Countries from "./Pools.vue";
 import Matches from "./Matches.vue";
 import Map from "./Map.vue";
@@ -115,7 +76,7 @@ import { onAuthStateChanged } from "firebase/auth";
 
 export default {
   name: "Home",
-  components: { Countries, Matches, Map },
+  components: { AppHeader, Countries, Matches, Map },
   data() {
     return {
       mapAvailable: true,
@@ -123,7 +84,6 @@ export default {
     };
   },
   mounted() {
-    // Handle map load fallback
     try {
       if (!Map) throw new Error("Map component failed to load");
     } catch (e) {
@@ -131,10 +91,16 @@ export default {
       this.mapAvailable = false;
     }
 
-    // Firebase auth listener
     onAuthStateChanged(auth, (user) => {
       this.userEmail = user ? user.email : "";
     });
+
+    this.scrollToHash(this.$route.hash);
+  },
+  watch: {
+    '$route.hash'(newHash) {
+      this.scrollToHash(newHash);
+    }
   },
   methods: {
     goToCountry(name) {
@@ -145,35 +111,73 @@ export default {
         this.userEmail = "";
       });
     },
+    scrollToHash(hash) {
+      if (!hash) return;
+      const el = document.querySelector(hash);
+      if (el) {
+        window.scrollTo({
+          top: el.offsetTop - 120,
+          behavior: 'smooth'
+        });
+      }
+    },
+    scrollTo(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        window.scrollTo({
+          top: el.offsetTop - 80,
+          behavior: "smooth",
+        });
+      }
+    }
   },
 };
 </script>
 
 <style scoped>
-/* Ensure the layout stretches full width */
-.v-container {
-  width: 100%;
-  max-width: 100% !important;
-  padding: 0;
-  margin: 0;
-}
-
-/* Responsive logo */
-.logo-img {
-  max-width: 100px;
-  width: 100%;
-  height: auto;
-}
-
-@media (max-width: 600px) {
-  .logo-img {
-    max-width: 80px;
-  }
-}
-
-/* Header text responsiveness */
-h1 {
-  font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem);
+/* Hero Section */
+.hero-section {
+  height: 35vh; /* compact height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #c20d2d, #ff6b6b);
+  color: #fff;
   text-align: center;
+  padding: 0 20px;
+}
+
+.hero-title {
+  font-size: 3rem; /* big letters */
+  font-weight: 800;
+  margin-bottom: 0.5rem; /* tighter spacing */
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+}
+
+.hero-subtitle {
+  font-size: 1.2rem; 
+  margin-bottom: 1rem; 
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+}
+
+/* Sections */
+.section {
+  padding-top: 80px;
+  padding-bottom: 60px;
+}
+
+/* Headings */
+h2 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* Buttons */
+.v-btn {
+  text-transform: uppercase;
+  font-weight: 600;
 }
 </style>

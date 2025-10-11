@@ -1,104 +1,106 @@
 <template>
-  <v-container fluid class="py-8 px-4">
-    <!-- Back Button -->
-    <v-btn variant="text" color="primary" class="mb-4" @click="$router.push('/')">
-      ← Back to Pools
-    </v-btn>
+  <v-container fluid class="pa-0 ma-0 w-full">
+    <!-- Global Header -->
+    <AppHeader />
 
-    <!-- Pool Title -->
-    <h1 class="text-h4 font-weight-bold text-center mb-6">{{ poolName }}</h1>
+    <v-container fluid class="py-12 px-4">
+      <!-- Back Button -->
+      <v-btn variant="text" color="primary" class="mb-4" @click="$router.push('/')">
+        ← Back to Pools
+      </v-btn>
 
-    <!-- Teams Table -->
-    <v-card v-if="pool" outlined class="pa-4 mb-8 pool-card mx-auto">
-      <v-card-title class="text-h6 font-weight-bold pb-2">Pool Standings</v-card-title>
-      <v-divider></v-divider>
+      <!-- Pool Title -->
+      <h1 class="text-h4 font-weight-bold text-center mb-6">{{ poolName }}</h1>
 
-      <v-card-text>
-        <v-table class="standings-table">
-          <thead>
-            <tr>
-              <th>Team</th>
-              <th>W</th>
-              <th>L</th>
-              <th>PF</th>
-              <th>PA</th>
-              <th>Diff</th>
-              <th>Tries</th>
-              <th>Bonus</th>
-              <th>Points</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="team in pool.teams" :key="team.name">
-              <td class="team-cell">
-                <img :src="team.flag" alt="flag" class="team-flag" />
-                <span>{{ team.name }}</span>
-              </td>
-              <td>{{ team.wins }}</td>
-              <td>{{ team.losses }}</td>
-              <td>{{ team.pointsFor }}</td>
-              <td>{{ team.pointsAgainst }}</td>
-              <td>{{ team.diff }}</td>
-              <td>{{ team.triesFor }}</td>
-              <td>{{ team.bonus }}</td>
-              <td><strong>{{ team.points }}</strong></td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-card-text>
-    </v-card>
+      <!-- Teams Table -->
+      <v-card v-if="pool" outlined class="pa-4 mb-8 pool-card mx-auto">
+        <v-card-title class="text-h6 font-weight-bold pb-2">Pool Standings</v-card-title>
+        <v-divider></v-divider>
 
-    <!-- Matches Section -->
-    <v-card v-if="pool" outlined class="pa-4 pool-card mx-auto">
-      <v-card-title class="text-h6 font-weight-bold pb-2">Matches</v-card-title>
-      <v-divider></v-divider>
+        <v-card-text>
+          <v-table class="standings-table">
+            <thead>
+              <tr>
+                <th>Team</th>
+                <th>W</th>
+                <th>L</th>
+                <th>PF</th>
+                <th>PA</th>
+                <th>Diff</th>
+                <th>Tries</th>
+                <th>Bonus</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="team in pool.teams" :key="team.name">
+                <td class="team-cell">
+                  <img :src="team.flag" alt="flag" class="team-flag" />
+                  <span>{{ team.name }}</span>
+                </td>
+                <td>{{ team.wins }}</td>
+                <td>{{ team.losses }}</td>
+                <td>{{ team.pointsFor }}</td>
+                <td>{{ team.pointsAgainst }}</td>
+                <td>{{ team.diff }}</td>
+                <td>{{ team.triesFor }}</td>
+                <td>{{ team.bonus }}</td>
+                <td><strong>{{ team.points }}</strong></td>
+              </tr>
+            </tbody>
+          </v-table>
+        </v-card-text>
+      </v-card>
 
-      <v-card-text>
-        <v-row dense justify="center">
-          <v-col
-            v-for="match in pool.matches"
-            :key="match.id"
-            cols="12"
-            sm="10"
-            md="8"
-            lg="6"
-            class="d-flex justify-center"
-          >
-            <v-card outlined class="match-card pa-4">
-              <div class="match-meta">
-                <span>{{ match.date }}</span>
-                <span>{{ match.stadium }}</span>
-              </div>
+      <!-- Matches Section -->
+      <v-card v-if="pool" outlined class="pa-4 pool-card mx-auto">
+        <v-card-title class="text-h6 font-weight-bold pb-2">Matches</v-card-title>
+        <v-divider></v-divider>
 
-              <div class="match-grid">
-                <!-- Team A Name -->
-                <div class="team-name left">{{ match.teamA }}</div>
-                <!-- Team A Flag -->
-                <img :src="getFlag(match.teamA, match.flagA)" alt="flag" class="match-flag" />
-                <!-- Score -->
-                <div class="score">{{ match.scoreA }} - {{ match.scoreB }}</div>
-                <!-- Team B Flag -->
-                <img :src="getFlag(match.teamB, match.flagB)" alt="flag" class="match-flag" />
-                <!-- Team B Name -->
-                <div class="team-name right">{{ match.teamB }}</div>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+        <v-card-text>
+          <v-row dense justify="center">
+            <v-col
+              v-for="match in pool.matches"
+              :key="match.id"
+              cols="12"
+              sm="10"
+              md="8"
+              lg="6"
+              class="d-flex justify-center"
+            >
+              <v-card outlined class="match-card pa-4">
+                <div class="match-meta">
+                  <span>{{ match.date }}</span>
+                  <span>{{ match.stadium }}</span>
+                </div>
 
-    <div v-else class="text-center my-6">
-      <p>Pool not found.</p>
-    </div>
+                <div class="match-grid">
+                  <div class="team-name left">{{ match.teamA }}</div>
+                  <img :src="getFlag(match.teamA, match.flagA)" alt="flag" class="match-flag" />
+                  <div class="score">{{ match.scoreA }} - {{ match.scoreB }}</div>
+                  <img :src="getFlag(match.teamB, match.flagB)" alt="flag" class="match-flag" />
+                  <div class="team-name right">{{ match.teamB }}</div>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <div v-else class="text-center my-6">
+        <p>Pool not found.</p>
+      </div>
+    </v-container>
   </v-container>
 </template>
 
 <script>
 import { groups } from "../assets/Data/PoolsData.js";
+import AppHeader from "../components/AppHeader.vue";
 
 export default {
   name: "Pool",
+  components: { AppHeader },
   props: ["name"],
   data() {
     return {
@@ -117,7 +119,6 @@ export default {
   methods: {
     getFlag(teamName, explicitFlag) {
       if (explicitFlag) return explicitFlag;
-
       const found = this.pool.teams.find(
         (t) => t.name.toLowerCase() === teamName.toLowerCase()
       );
@@ -128,6 +129,13 @@ export default {
 </script>
 
 <style scoped>
+.v-container {
+  width: 100%;
+  max-width: 100% !important;
+  padding: 0;
+  margin: 0;
+}
+
 /* Card Styling */
 .pool-card {
   max-width: 900px;
@@ -193,20 +201,20 @@ export default {
 /* Grid for Alignment */
 .match-grid {
   display: grid;
-  grid-template-columns: 1fr 36px 80px 36px 1fr; /* flexible names, fixed flags/scores */
+  grid-template-columns: 1fr 36px 80px 36px 1fr;
   align-items: center;
   justify-items: center;
   gap: 8px;
 }
 
 .match-grid .team-name.left {
-  justify-self: end; /* left team right-aligned */
+  justify-self: end;
   text-align: right;
   white-space: nowrap;
 }
 
 .match-grid .team-name.right {
-  justify-self: start; /* right team left-aligned */
+  justify-self: start;
   text-align: left;
   white-space: nowrap;
 }

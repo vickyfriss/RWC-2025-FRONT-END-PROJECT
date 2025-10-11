@@ -1,77 +1,82 @@
 <template>
-  <v-container fluid class="py-8 px-4">
-    <!-- Back Button -->
-    <v-btn variant="text" color="primary" class="mb-4" @click="$router.back()">
-      ← Back
-    </v-btn>
+  <v-app>
+    <!-- Global Header -->
+    <AppHeader />
 
-    <!-- Venue Info -->
-    <v-card outlined class="pa-4 mb-8 venue-card mx-auto">
-      <h1 class="text-h4 font-weight-bold mb-2">{{ venue?.stadium }}</h1>
-      <p><strong>City:</strong> {{ venue?.city }}</p>
-      <p><strong>Capacity:</strong> {{ venue?.capacity.toLocaleString() }}</p>
-      <div class="venue-image" v-if="venue?.image">
-        <img :src="venue.image" :alt="venue.stadium" />
-      </div>
-    </v-card>
+    <!-- Main Content -->
+    <v-main>
+      <v-container fluid class="py-8 px-4">
+        <!-- Back Button -->
+        <v-btn variant="text" color="primary" class="mb-4" @click="$router.back()">
+          ← Back
+        </v-btn>
 
-    <!-- Matches Section -->
-    <v-card v-if="venueMatches.length" outlined class="pa-4 venue-card mx-auto">
-      <v-card-title class="text-h6 font-weight-bold pb-2">Matches</v-card-title>
-      <v-divider></v-divider>
+        <!-- Venue Info -->
+        <v-card outlined class="pa-4 mb-8 venue-card mx-auto">
+          <h1 class="text-h4 font-weight-bold mb-2">{{ venue?.stadium }}</h1>
+          <p><strong>City:</strong> {{ venue?.city }}</p>
+          <p><strong>Capacity:</strong> {{ venue?.capacity.toLocaleString() }}</p>
+          <div class="venue-image" v-if="venue?.image">
+            <img :src="venue.image" :alt="venue.stadium" />
+          </div>
+        </v-card>
 
-      <v-card-text>
-        <v-row dense justify="center">
-          <v-col
-            v-for="match in venueMatches"
-            :key="match.id + match.stage"
-            cols="12"
-            sm="10"
-            md="8"
-            lg="6"
-            class="d-flex justify-center"
-          >
-            <v-card outlined class="match-card pa-4">
-              <div class="match-meta">
-                <span>{{ match.date }}</span>
-                <span>{{ match.stage || match.poolName || "Pool Stage" }}</span>
-              </div>
+        <!-- Matches Section -->
+        <v-card v-if="venueMatches.length" outlined class="pa-4 venue-card mx-auto">
+          <v-card-title class="text-h6 font-weight-bold pb-2">Matches</v-card-title>
+          <v-divider></v-divider>
 
-              <div class="match-grid">
-                <!-- Team A Name -->
-                <div class="team-name left">{{ match.teamA }}</div>
-                <!-- Team A Flag -->
-                <img :src="getFlag(match.teamA)" alt="flag" class="match-flag" />
-                <!-- Score -->
-                <div class="score">
-                  <span>{{ match.scoreA }}</span>
-                  <span>-</span>
-                  <span>{{ match.scoreB }}</span>
-                </div>
-                <!-- Team B Flag -->
-                <img :src="getFlag(match.teamB)" alt="flag" class="match-flag" />
-                <!-- Team B Name -->
-                <div class="team-name right">{{ match.teamB }}</div>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+          <v-card-text>
+            <v-row dense justify="center">
+              <v-col
+                v-for="match in venueMatches"
+                :key="match.id + match.stage"
+                cols="12"
+                sm="10"
+                md="8"
+                lg="6"
+                class="d-flex justify-center"
+              >
+                <v-card outlined class="match-card pa-4">
+                  <div class="match-meta">
+                    <span>{{ match.date }}</span>
+                    <span>{{ match.stage || match.poolName || "Pool Stage" }}</span>
+                  </div>
 
-    <div v-else class="text-center my-6">
-      <p>No matches found for this venue.</p>
-    </div>
-  </v-container>
+                  <div class="match-grid">
+                    <div class="team-name left">{{ match.teamA }}</div>
+                    <img :src="getFlag(match.teamA)" alt="flag" class="match-flag" />
+                    <div class="score">
+                      <span>{{ match.scoreA }}</span>
+                      <span>-</span>
+                      <span>{{ match.scoreB }}</span>
+                    </div>
+                    <img :src="getFlag(match.teamB)" alt="flag" class="match-flag" />
+                    <div class="team-name right">{{ match.teamB }}</div>
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+
+        <div v-else class="text-center my-6">
+          <p>No matches found for this venue.</p>
+        </div>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
+import AppHeader from "../components/AppHeader.vue";
 import venues from "../assets/Data/venues.js";
 import { groups } from "../assets/Data/PoolsData.js";
 import { knockoutGroup } from "../assets/Data/KnockoutData.js";
 
 export default {
   name: "Venue",
+  components: { AppHeader },
   data() {
     return {
       venue: null,
@@ -86,20 +91,14 @@ export default {
       const normalize = (str) =>
         str.toLowerCase().replace(/[’']/g, "'").replace(/,/g, "").trim();
 
-      // Flatten pool matches
       const poolMatches = groups.flatMap((pool) =>
         pool.matches.map((m) => ({ ...m, poolName: pool.name }))
       );
-
-      // Flatten knockout matches
       const knockoutMatches = knockoutGroup.flatMap((stage) =>
         stage.matches.map((m) => ({ ...m }))
       );
-
-      // Combine both
       const allMatches = [...poolMatches, ...knockoutMatches];
 
-      // Filter matches for this venue
       this.venueMatches = allMatches.filter((match) =>
         normalize(match.stadium).includes(normalize(this.venue.stadium))
       );
