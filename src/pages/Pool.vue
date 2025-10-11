@@ -59,8 +59,9 @@
             v-for="match in pool.matches"
             :key="match.id"
             cols="12"
-            md="6"
-            lg="5"
+            sm="10"
+            md="8"
+            lg="6"
             class="d-flex justify-center"
           >
             <v-card outlined class="match-card pa-4">
@@ -69,28 +70,17 @@
                 <span>{{ match.stadium }}</span>
               </div>
 
-              <div class="match-teams">
-                <div class="team-side">
-                  <img
-                    :src="getFlag(match.teamA, match.flagA)"
-                    alt="flag"
-                    class="match-flag"
-                  />
-                  <span>{{ match.teamA }}</span>
-                </div>
-
-                <div class="match-score">
-                  {{ match.scoreA }} - {{ match.scoreB }}
-                </div>
-
-                <div class="team-side">
-                  <img
-                    :src="getFlag(match.teamB, match.flagB)"
-                    alt="flag"
-                    class="match-flag"
-                  />
-                  <span>{{ match.teamB }}</span>
-                </div>
+              <div class="match-grid">
+                <!-- Team A Name -->
+                <div class="team-name left">{{ match.teamA }}</div>
+                <!-- Team A Flag -->
+                <img :src="getFlag(match.teamA, match.flagA)" alt="flag" class="match-flag" />
+                <!-- Score -->
+                <div class="score">{{ match.scoreA }} - {{ match.scoreB }}</div>
+                <!-- Team B Flag -->
+                <img :src="getFlag(match.teamB, match.flagB)" alt="flag" class="match-flag" />
+                <!-- Team B Name -->
+                <div class="team-name right">{{ match.teamB }}</div>
               </div>
             </v-card>
           </v-col>
@@ -138,10 +128,12 @@ export default {
 </script>
 
 <style scoped>
+/* Card Styling */
 .pool-card {
   max-width: 900px;
   border-radius: 16px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
 }
 
 /* Table Styling */
@@ -181,10 +173,10 @@ export default {
 /* Matches Section */
 .match-card {
   width: 100%;
-  max-width: 420px;
   border-radius: 12px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease;
+  margin-bottom: 1rem;
 }
 .match-card:hover {
   transform: scale(1.02);
@@ -198,29 +190,67 @@ export default {
   margin-bottom: 10px;
 }
 
-.match-teams {
-  display: flex;
+/* Grid for Alignment */
+.match-grid {
+  display: grid;
+  grid-template-columns: 1fr 36px 80px 36px 1fr; /* flexible names, fixed flags/scores */
   align-items: center;
-  justify-content: space-between;
-  font-weight: 500;
-  text-align: center;
-}
-
-.team-side {
-  display: flex;
-  align-items: center;
+  justify-items: center;
   gap: 8px;
 }
 
-.match-flag {
+.match-grid .team-name.left {
+  justify-self: end; /* left team right-aligned */
+  text-align: right;
+  white-space: nowrap;
+}
+
+.match-grid .team-name.right {
+  justify-self: start; /* right team left-aligned */
+  text-align: left;
+  white-space: nowrap;
+}
+
+.match-grid .score {
+  font-weight: bold;
+  font-size: 1.3rem;
+  font-family: monospace;
+  white-space: nowrap;
+}
+
+.match-grid .match-flag {
   width: 28px;
   height: 18px;
   object-fit: contain;
   border-radius: 2px;
 }
 
-.match-score {
-  font-weight: bold;
-  font-size: 1.2rem;
+/* Responsive */
+@media (max-width: 768px) {
+  .match-grid {
+    grid-template-columns: 1fr 24px 60px 24px 1fr;
+    gap: 4px;
+  }
+  .match-grid .score {
+    font-size: 1.1rem;
+  }
+  .match-grid .match-flag {
+    width: 20px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .match-grid {
+    grid-template-columns: 1fr 20px 50px 20px 1fr;
+    gap: 2px;
+  }
+  .match-grid .score {
+    font-size: 1rem;
+  }
+  .match-grid .match-flag {
+    width: 16px;
+    height: 10px;
+  }
 }
 </style>
