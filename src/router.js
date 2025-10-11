@@ -1,4 +1,3 @@
-// src/router.js
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from './pages/Home.vue';
 import Country from './pages/Country.vue';
@@ -18,7 +17,6 @@ const routes = [
   { path: '/profile', component: Profile, meta: { requiresAuth: true } },
   { path: '/country/:name', component: Country, props: route => ({ country: route.params.name }) },
   { path: '/pool/:name', component: Pool, props: true },
-  // NEW route for Venue page
   { path: '/venue/:city', name: 'Venue', component: Venue, props: true },
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
@@ -28,9 +26,19 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
+// Helper to get current user as a promise
+function getCurrentUser() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      unsubscribe();
+      resolve(user);
+    }, reject);
+  });
+}
+
+router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.meta.requiresAuth;
-  const currentUser = auth.currentUser;
+  const currentUser = await getCurrentUser();
 
   if (requiresAuth && !currentUser) {
     next('/login');
