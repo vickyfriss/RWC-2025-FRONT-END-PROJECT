@@ -1,10 +1,5 @@
 <template>
-    <v-app-bar
-      color="white"
-      app
-      flat
-      class="header-appbar"
-    >
+    <v-app-bar color="white" app flat class="header-appbar">
       <!-- Logo -->
       <div class="logo-wrapper">
         <a href="https://www.rugbyworldcup.com/2025" target="_blank" rel="noopener">
@@ -20,7 +15,6 @@
   
       <!-- Navigation -->
       <div class="nav-wrapper">
-        <!-- Back to Home -->
         <v-btn
           v-if="$route.path !== '/'"
           text
@@ -30,7 +24,6 @@
           Back to Home
         </v-btn>
   
-        <!-- Main nav buttons -->
         <template v-else>
           <v-btn text class="nav-btn" @click="scrollTo('pools')">Pools</v-btn>
           <v-btn text class="nav-btn" @click="scrollTo('venues')">Venues</v-btn>
@@ -39,20 +32,17 @@
         </template>
   
         <!-- User menu / Login -->
-        <div v-if="userEmail">
+        <div v-if="user">
           <v-menu offset-y>
             <template #activator="{ props }">
-              <v-btn v-bind="props" icon>
-                <v-icon large>mdi-account-circle-outline</v-icon>
+              <!-- Visible button with icon -->
+              <v-btn v-bind="props" class="nav-btn" elevation="2">
+                <v-icon left>mdi-account-circle-outline</v-icon>
+                {{ user.email }}
               </v-btn>
             </template>
+  
             <v-list>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>{{ userEmail }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-divider />
               <v-list-item @click="$router.push('/profile')">
                 <v-list-item-title>Profile</v-list-item-title>
               </v-list-item>
@@ -72,31 +62,33 @@
   
   <script>
   import { auth } from "../firebase";
-  import { onAuthStateChanged } from "firebase/auth";
+  import { onAuthStateChanged, signOut } from "firebase/auth";
   
   export default {
     name: "AppHeader",
     data() {
-      return { userEmail: "" };
+      return {
+        user: null,
+      };
     },
     mounted() {
       onAuthStateChanged(auth, (user) => {
-        this.userEmail = user ? user.email : "";
+        this.user = user;
       });
     },
     methods: {
       logout() {
-        auth.signOut().then(() => (this.userEmail = ""));
+        signOut(auth).then(() => {
+          this.user = null;
+          this.$router.push("/login");
+        });
       },
       scrollTo(id) {
         const scroll = () => {
           const el = document.getElementById(id);
           if (el) {
             const offset = this.$el.offsetHeight;
-            window.scrollTo({
-              top: el.offsetTop - offset,
-              behavior: "smooth",
-            });
+            window.scrollTo({ top: el.offsetTop - offset, behavior: "smooth" });
           }
         };
         if (this.$route.path !== "/") {
@@ -111,9 +103,9 @@
   
   <style scoped>
   .header-appbar {
-    height: 80px; /* compact */
+    height: 80px;
     display: flex;
-    align-items: center; /* vertical centering */
+    align-items: center;
     justify-content: space-between;
     padding: 0 28px;
     border-bottom: 1px solid #e5e5e5;
@@ -121,7 +113,6 @@
     z-index: 1000;
   }
   
-  /* Logo area */
   .logo-wrapper {
     display: flex;
     align-items: center;
@@ -129,13 +120,12 @@
   }
   
   .logo-img {
-    height: 60px; /* perfect fit */
+    height: 60px;
     width: auto;
     display: block;
     object-fit: contain;
   }
   
-  /* Navigation */
   .nav-wrapper {
     display: flex;
     align-items: center;
@@ -151,10 +141,9 @@
   }
   
   .nav-btn:hover {
-    color: #c20d2d; /* RWC red accent */
+    color: #c20d2d;
   }
   
-  /* Responsive */
   @media (max-width: 960px) {
     .header-appbar {
       flex-wrap: wrap;
