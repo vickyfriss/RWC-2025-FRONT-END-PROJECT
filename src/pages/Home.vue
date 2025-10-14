@@ -39,6 +39,21 @@
           </div>
         </section>
 
+        <!-- 🆕 Stats Section -->
+        <section id="stats" class="section stats-section text-center">
+          <v-row justify="center">
+            <v-col cols="12" md="8">
+              <h2 class="stats-title">Explore Player & Team Stats</h2>
+              <p class="stats-subtitle">
+                Dive into interactive charts and see who’s leading the 2025 Women’s Rugby World Cup.
+              </p>
+              <v-btn color="red darken-2" large class="mt-4 stats-btn" @click="goToStats">
+                View Statistics
+              </v-btn>
+            </v-col>
+          </v-row>
+        </section>
+
         <!-- Final Game Section -->
         <section id="final" class="section final-section">
           <EnglandChampion />
@@ -53,7 +68,7 @@
 import AppHeader from "../components/AppHeader.vue";
 import Countries from "./Pools.vue";
 import Map from "./Map.vue";
-import EnglandChampion from "./EnglandChampion.vue"; // imported new component
+import EnglandChampion from "./EnglandChampion.vue";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -88,6 +103,9 @@ export default {
   methods: {
     goToCountry(name) {
       this.$router.push(`/country/${name}`);
+    },
+    goToStats() {
+      this.$router.push('/stats'); // ✅ Navigate to the StatsCharts page
     },
     logout() {
       auth.signOut().then(() => {
@@ -155,7 +173,7 @@ export default {
   padding-bottom: 40px;
 }
 
-/* Specific per-section adjustments if needed */
+/* Specific per-section adjustments */
 .countries-section {
   padding-top: 30px;
   padding-bottom: 30px;
@@ -164,6 +182,29 @@ export default {
 .map-section {
   padding-top: 30px;
   padding-bottom: 30px;
+}
+
+/* 🆕 Stats Section */
+.stats-section {
+  background-color: #fafafa;
+  text-align: center;
+}
+
+.stats-title {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #222;
+}
+
+.stats-subtitle {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.stats-btn {
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .final-section {
@@ -180,13 +221,7 @@ h2 {
   text-align: center;
 }
 
-/* Buttons */
-.v-btn {
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-/* Responsive adjustments for smaller screens */
+/* Responsive adjustments */
 @media (max-width: 600px) {
   .hero-section {
     min-height: 40vh;

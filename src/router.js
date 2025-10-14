@@ -4,6 +4,7 @@ import Country from './pages/Country.vue';
 import Login from './pages/Login.vue';
 import Register from './pages/Register.vue';
 import Profile from './pages/Profile.vue';
+import StatsCharts from './pages/StatsCharts.vue'; // ✅ Add this
 import { auth } from './firebase';
 
 // Lazy load Pool and Venue pages
@@ -18,6 +19,11 @@ const routes = [
   { path: '/country/:name', component: Country, props: route => ({ country: route.params.name }) },
   { path: '/pool/:name', component: Pool, props: true },
   { path: '/venue/:city', name: 'Venue', component: Venue, props: true },
+
+  // ✅ New stats route
+  { path: '/stats', name: 'StatsCharts', component: StatsCharts },
+
+  // Catch-all redirect
   { path: '/:pathMatch(.*)*', redirect: '/' }
 ];
 
@@ -36,6 +42,7 @@ function getCurrentUser() {
   });
 }
 
+// ✅ Auth guard (unchanged)
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.meta.requiresAuth;
   const currentUser = await getCurrentUser();
