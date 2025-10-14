@@ -4,13 +4,11 @@
     <AppHeader />
 
     <v-container fluid class="py-12 px-4">
-      <!-- Back Button -->
-      <v-btn variant="text" color="primary" class="mb-4" @click="$router.push('/')">
-        ← Back to Pools
-      </v-btn>
-
-      <!-- Pool Title -->
-      <h1 class="text-h4 font-weight-bold text-center mb-6">{{ poolName }}</h1>
+      <!-- Header Wrapper for spacing -->
+      <div class="header-wrapper">
+        <!-- Only the Pool Title -->
+        <h1 class="text-h4 font-weight-bold pool-title">{{ poolName }}</h1>
+      </div>
 
       <!-- Teams Table -->
       <v-card v-if="pool" outlined class="pa-4 mb-8 pool-card mx-auto">
@@ -136,6 +134,31 @@ export default {
   margin: 0;
 }
 
+/* Header Wrapper spacing */
+/* Space above the Pool title */
+.header-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4rem;  /* increased space from top */
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .header-wrapper {
+    margin-top: 5rem; /* more space on tablets */
+    margin-bottom: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-wrapper {
+    margin-top: 6rem; /* more space on small phones */
+    margin-bottom: 4rem;
+  }
+}
+
+
 /* Card Styling */
 .pool-card {
   max-width: 900px;
@@ -149,6 +172,7 @@ export default {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+  table-layout: fixed; /* equal column widths */
 }
 
 .standings-table th {
