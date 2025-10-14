@@ -19,11 +19,23 @@
             </div>
           </v-card-text>
 
-          <v-card-actions class="px-6 pb-4 justify-between">
-            <v-btn color="primary" variant="text" @click="$router.push('/home')">
-              Back to Home
+          <v-card-actions class="profile-actions">
+            <v-btn
+              small
+              color="primary"
+              class="profile-btn"
+              @click="$router.push('/home')"
+            >
+              BACK TO HOME
             </v-btn>
-            <v-btn color="error" variant="text" @click="logout">Logout</v-btn>
+            <v-btn
+              small
+              color="primary"
+              class="profile-btn"
+              @click="logout"
+            >
+              LOGOUT
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -42,11 +54,8 @@ export default {
   },
   mounted() {
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.user = user;
-      } else {
-        this.$router.push("/login");
-      }
+      if (user) this.user = user;
+      else this.$router.push("/login");
     });
   },
   methods: {
@@ -64,8 +73,9 @@ export default {
   font-size: 1rem;
   transition: all 0.3s ease;
   width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
-
 .hover-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -85,7 +95,7 @@ export default {
 .profile-info {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .profile-field {
@@ -113,9 +123,39 @@ export default {
   word-break: break-all;
 }
 
+/* Buttons styled like "VIEW DETAILS" */
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 1rem;
+}
+
+.profile-btn {
+  text-transform: uppercase;
+  font-weight: 600;
+  color: white !important;
+  background-color: #1976d2 !important;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 8px 18px;
+}
+
+.profile-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(25, 118, 210, 0.3);
+  background-color: #1565c0 !important;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .profile-card {
     font-size: 0.9rem;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 </style>
