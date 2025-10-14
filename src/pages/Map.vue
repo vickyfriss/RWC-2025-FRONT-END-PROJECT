@@ -1,72 +1,77 @@
 <template>
-  <div class="venue-map">
-    <!-- Click-to-open dropdown -->
-    <div class="search-bar">
-      <div class="dropdown-wrapper">
-        <input
-          type="text"
-          :value="selectedVenue ? `${selectedVenue.city} - ${selectedVenue.stadium}` : ''"
-          placeholder="Select city or stadium..."
-          readonly
-          @click="toggleDropdown"
-        />
-        <ul v-if="showDropdown" class="dropdown">
-          <li
-            v-for="venue in venues"
-            :key="venue.city"
-            @mousedown.prevent="selectVenue(venue)"
-          >
-            {{ venue.city }} - {{ venue.stadium }}
-          </li>
-        </ul>
-      </div>
-    </div>
+  <div class="venue-section">
+    <!-- Section title -->
+    <h2 class="section-title">Venues Map & Details</h2>
 
-    <!-- Map -->
-    <l-map
-      ref="mapRef"
-      style="height: 500px; width: 100%; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);"
-      :zoom="6"
-      :center="mapCenter"
-      :scroll-wheel-zoom="false"
-    >
-      <l-tile-layer
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
-        subdomains="abcd"
-        maxZoom="20"
-      />
-
-      <!-- Stadium markers -->
-      <l-marker
-        v-for="venue in venues"
-        :key="venue.city"
-        :lat-lng="venue.coords"
-        @ready="registerMarker(venue.city, $event)"
-        @click="selectVenueFromMap(venue)"
-      >
-        <l-popup class="popup-card">
-          <div class="popup-content">
-            <h3>{{ venue.stadium }}</h3>
-            <p><strong>City:</strong> {{ venue.city }}</p>
-            <p><strong>Capacity:</strong> {{ venue.capacity.toLocaleString() }}</p>
-            <div class="stadium-image">
-              <img v-if="venue.image" :src="venue.image" :alt="venue.stadium" />
-            </div>
-
-            <!-- More Info Button -->
-            <v-btn
-              small
-              color="primary"
-              class="mt-2 btn-uppercase"
-              @click="$router.push({ name: 'Venue', params: { city: venue.city } })"
+    <div class="venue-map">
+      <!-- Click-to-open dropdown -->
+      <div class="search-bar">
+        <div class="dropdown-wrapper">
+          <input
+            type="text"
+            :value="selectedVenue ? `${selectedVenue.city} - ${selectedVenue.stadium}` : ''"
+            placeholder="Select city or stadium..."
+            readonly
+            @click="toggleDropdown"
+          />
+          <ul v-if="showDropdown" class="dropdown">
+            <li
+              v-for="venue in venues"
+              :key="venue.city"
+              @mousedown.prevent="selectVenue(venue)"
             >
-              More Info
-            </v-btn>
-          </div>
-        </l-popup>
-      </l-marker>
-    </l-map>
+              {{ venue.city }} - {{ venue.stadium }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <l-map
+        ref="mapRef"
+        style="height: 500px; width: 100%; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);"
+        :zoom="6"
+        :center="mapCenter"
+        :scroll-wheel-zoom="false"
+      >
+        <l-tile-layer
+          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+          subdomains="abcd"
+          maxZoom="20"
+        />
+
+        <!-- Stadium markers -->
+        <l-marker
+          v-for="venue in venues"
+          :key="venue.city"
+          :lat-lng="venue.coords"
+          @ready="registerMarker(venue.city, $event)"
+          @click="selectVenueFromMap(venue)"
+        >
+          <l-popup class="popup-card">
+            <div class="popup-content">
+              <h3>{{ venue.stadium }}</h3>
+              <p><strong>City:</strong> {{ venue.city }}</p>
+              <p><strong>Capacity:</strong> {{ venue.capacity.toLocaleString() }}</p>
+              <div class="stadium-image">
+                <img v-if="venue.image" :src="venue.image" :alt="venue.stadium" />
+              </div>
+
+              <!-- More Info Button -->
+              <v-btn
+                small
+                color="primary"
+                class="mt-2 btn-uppercase"
+                @click="$router.push({ name: 'Venue', params: { city: venue.city } })"
+              >
+                More Info
+              </v-btn>
+            </div>
+          </l-popup>
+        </l-marker>
+      </l-map>
+    </div>
   </div>
 </template>
 
@@ -78,7 +83,8 @@ export default {
   data() {
     return {
       venues,
-      mapCenter: [52.3555, -1.1743],
+      // Center roughly in England
+      mapCenter: [53, -1.8],
       markerRefs: {},
       showDropdown: false,
       selectedVenue: null,
@@ -100,7 +106,6 @@ export default {
       this.showDropdown = false;
     },
     selectVenueFromMap(venue) {
-      // Update search bar when clicking on map
       this.selectedVenue = venue;
     },
   },
@@ -108,14 +113,32 @@ export default {
 </script>
 
 <style scoped>
+.venue-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px 0;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1976d2;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Map container */
 .venue-map {
-  margin: 20px 0;
+  width: 100%;
+  max-width: 800px; /* restrict width */
 }
 
 /* Search bar */
 .search-bar {
   position: relative;
   width: 100%;
+  margin-bottom: 15px;
 }
 
 .dropdown-wrapper {
@@ -125,8 +148,8 @@ export default {
 
 .dropdown-wrapper input {
   width: 100%;
-  padding: 6px 10px;
-  font-size: 0.9rem;
+  padding: 8px 12px;
+  font-size: 0.95rem;
   border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
@@ -158,10 +181,10 @@ export default {
 /* Popup card */
 .popup-card .leaflet-popup-content-wrapper {
   border-radius: 12px;
-  width: 260px !important;      /* fixed width */
-  min-width: 260px !important;  /* ensure all same size */
+  width: 260px !important;
+  min-width: 260px !important;
   max-width: 260px !important;
-  text-align: center;           /* center everything */
+  text-align: center;
   box-sizing: border-box;
   padding: 10px;
 }
@@ -171,7 +194,6 @@ export default {
   padding: 0;
 }
 
-/* Popup content */
 .popup-content h3 {
   margin-bottom: 6px;
   font-weight: bold;

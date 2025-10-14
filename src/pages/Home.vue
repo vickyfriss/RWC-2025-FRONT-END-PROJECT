@@ -25,40 +25,23 @@
         </section>
 
         <!-- Countries Section -->
-        <section id="countries" class="section">
-          <v-row class="mx-0">
-            <v-col cols="12" class="pa-0">
-              <Countries @go-to-country="goToCountry" />
-            </v-col>
-          </v-row>
+        <section id="countries" class="section countries-section">
+          <Countries @go-to-country="goToCountry" />
         </section>
 
         <!-- Map Section -->
-        <section id="map" class="section">
-          <v-row justify="center" class="my-8 px-4">
-            <h2 class="text-h5 font-weight-bold text-center">
-              Host Cities & Venues
-            </h2>
-          </v-row>
-          <v-row class="mx-0">
-            <v-col cols="12" class="pa-0">
-              <div v-if="mapAvailable">
-                <Map />
-              </div>
-              <div v-else class="text-center my-4">
-                <p>⚠️ Map unavailable, please check back later.</p>
-              </div>
-            </v-col>
-          </v-row>
+        <section id="map" class="section map-section">
+          <div v-if="mapAvailable">
+            <Map />
+          </div>
+          <div v-else class="text-center my-4">
+            <p>⚠️ Map unavailable, please check back later.</p>
+          </div>
         </section>
 
-        <!-- Matches Section -->
-        <section id="matches" class="section">
-          <v-row class="mx-0">
-            <v-col cols="12" class="pa-0">
-              <Matches />
-            </v-col>
-          </v-row>
+        <!-- Final Game Section -->
+        <section id="final" class="section final-section">
+          <EnglandChampion />
         </section>
 
       </v-container>
@@ -69,14 +52,14 @@
 <script>
 import AppHeader from "../components/AppHeader.vue";
 import Countries from "./Pools.vue";
-import Matches from "./Matches.vue";
 import Map from "./Map.vue";
+import EnglandChampion from "./EnglandChampion.vue"; // imported new component
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 export default {
   name: "Home",
-  components: { AppHeader, Countries, Matches, Map },
+  components: { AppHeader, Countries, Map, EnglandChampion },
   data() {
     return {
       mapAvailable: true,
@@ -166,15 +149,31 @@ export default {
   padding: 0.75rem 1.5rem;
 }
 
-/* Sections */
+/* Sections with reduced spacing */
 .section {
-  padding-top: 80px;
-  padding-bottom: 60px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* Specific per-section adjustments if needed */
+.countries-section {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.map-section {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.final-section {
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 /* Headings */
 h2 {
-  margin-top: 2rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   font-weight: 600;
   font-size: 1.5rem;
@@ -206,6 +205,11 @@ h2 {
     width: 100%;
     font-size: 0.9rem;
     padding: 0.65rem 1rem;
+  }
+
+  .section {
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 }
 </style>

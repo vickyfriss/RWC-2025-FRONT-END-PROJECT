@@ -21,7 +21,7 @@
       <template v-else>
         <v-btn text class="nav-btn" @click="scrollTo('countries')">Pools</v-btn>
         <v-btn text class="nav-btn" @click="scrollTo('map')">Venues</v-btn>
-        <v-btn text class="nav-btn" @click="scrollTo('matches')">Matches</v-btn>
+        <v-btn text class="nav-btn" @click="scrollTo('final')">Champions</v-btn>
       </template>
 
       <template v-if="user">
@@ -75,8 +75,8 @@
           <v-list-item @click="scrollTo('map')">
             <v-list-item-title>Venues</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="scrollTo('matches')">
-            <v-list-item-title>Matches</v-list-item-title>
+          <v-list-item @click="scrollTo('final')">
+            <v-list-item-title>Champions</v-list-item-title>
           </v-list-item>
         </template>
 
