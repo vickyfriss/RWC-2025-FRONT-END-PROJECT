@@ -199,8 +199,13 @@ export default {
 /* Highlight QF/SF */
 .highlight {
   background-color: #1976d2 !important;
-  color: white;
+  color: white !important; /* make all text white */
 }
+
+.highlight .team-points {
+  color: white !important; /* override the blue */
+}
+
 
 /* Responsive */
 @media (max-width: 1280px) {
