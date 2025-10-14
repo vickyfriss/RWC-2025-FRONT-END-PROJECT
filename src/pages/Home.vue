@@ -17,7 +17,7 @@
               <p class="hero-subtitle">
                 Discover the pools, matches, and host cities for the biggest tournament of the year.
               </p>
-              <v-btn color="red darken-2" class="mt-6" large @click="scrollTo('countries')">
+              <v-btn color="red darken-2" class="mt-6 hero-btn" large @click="scrollTo('countries')">
                 Explore Pools
               </v-btn>
             </v-col>
@@ -137,7 +137,7 @@ export default {
 <style scoped>
 /* Hero Section */
 .hero-section {
-  height: 35vh; /* compact height */
+  min-height: 35vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,16 +148,22 @@ export default {
 }
 
 .hero-title {
-  font-size: 3rem; /* big letters */
+  font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 800;
-  margin-bottom: 0.5rem; /* tighter spacing */
+  margin-bottom: 0.5rem;
   text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+  line-height: 1.2;
 }
 
 .hero-subtitle {
-  font-size: 1.2rem; 
-  margin-bottom: 1rem; 
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  margin-bottom: 1rem;
   text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+}
+
+.hero-btn {
+  font-size: clamp(0.8rem, 2.5vw, 1rem);
+  padding: 0.75rem 1.5rem;
 }
 
 /* Sections */
@@ -179,5 +185,27 @@ h2 {
 .v-btn {
   text-transform: uppercase;
   font-weight: 600;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+  .hero-section {
+    min-height: 40vh;
+    padding: 0 15px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .hero-btn {
+    width: 100%;
+    font-size: 0.9rem;
+    padding: 0.65rem 1rem;
+  }
 }
 </style>
