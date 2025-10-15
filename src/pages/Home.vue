@@ -39,19 +39,23 @@
           </div>
         </section>
 
-        <!-- 🆕 Stats Section -->
-        <section id="stats" class="section stats-section text-center">
-          <v-row justify="center">
-            <v-col cols="12" md="8">
-              <h2 class="stats-title">Explore Player & Team Stats</h2>
-              <p class="stats-subtitle">
-                Dive into interactive charts and see who’s leading the 2025 Women’s Rugby World Cup.
-              </p>
-              <v-btn color="red darken-2" large class="mt-4 stats-btn" @click="goToStats">
-                View Statistics
-              </v-btn>
-            </v-col>
-          </v-row>
+        <!-- 🆕 Stats Charts Section -->
+        <section id="stats" class="section stats-section">
+          <v-container>
+            <v-row justify="center" class="mb-4">
+              <v-col cols="12" md="8" class="text-center">
+                <h2 class="stats-title">Tournament Statistics</h2>
+                <p class="stats-subtitle">
+                  Explore team and player performance through interactive charts.
+                </p>
+              </v-col>
+            </v-row>
+            <v-row justify="center">
+              <v-col cols="12" md="10">
+                <StatsCharts />
+              </v-col>
+            </v-row>
+          </v-container>
         </section>
 
         <!-- Final Game Section -->
@@ -68,6 +72,7 @@
 import AppHeader from "../components/AppHeader.vue";
 import Countries from "./Pools.vue";
 import Map from "./Map.vue";
+import StatsCharts from "./StatsCharts.vue";
 import EnglandChampion from "./EnglandChampion.vue";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -246,5 +251,23 @@ h2 {
     padding-top: 20px;
     padding-bottom: 20px;
   }
+
+  .stats-section {
+  background-color: #f8f8f8;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.stats-title {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #222;
+}
+
+.stats-subtitle {
+  color: #555;
+  font-size: 1rem;
+}
+
 }
 </style>
