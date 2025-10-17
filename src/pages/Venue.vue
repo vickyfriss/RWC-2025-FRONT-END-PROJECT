@@ -13,7 +13,7 @@
 
         <!-- Venue Info -->
         <v-card outlined class="pa-4 mb-8 venue-card mx-auto">
-          <h1 class="text-h4 font-weight-bold mb-2">{{ venue?.stadium }}</h1>
+          <h1 class="text-h4 font-weight-bold mb-2 text-center">{{ venue?.stadium }}</h1>
           <p><strong>City:</strong> {{ venue?.city }}</p>
           <p><strong>Capacity:</strong> {{ venue?.capacity.toLocaleString() }}</p>
           <div class="venue-image" v-if="venue?.image">
