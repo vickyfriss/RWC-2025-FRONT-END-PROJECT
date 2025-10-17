@@ -61,6 +61,7 @@ const initCharts = () => {
 
   const isMobile = window.innerWidth < 640;
   const chartHeight = isMobile ? 280 : 420;
+  const marginBottom = isMobile ? 20 : 140; // <-- dynamic bottom margin
 
   // ---- Top Players Chart ----
   const topPlayers = [...playerStats]
@@ -88,7 +89,7 @@ const initCharts = () => {
       type: "column", 
       backgroundColor: "transparent", 
       height: chartHeight, 
-      marginBottom: 140 // keep big margin for rotated labels
+      marginBottom: isMobile ? 95 : 140,
     },
     title: null,
     credits: { enabled: false },
@@ -99,7 +100,7 @@ const initCharts = () => {
       labels: { 
         rotation: isMobile ? -80 : -80, 
         style: { fontSize: isMobile ? "10px" : "clamp(11px,1vw,15px)" }, 
-        y: isMobile ? 10 : 10 // bring labels closer to axis, negative offset
+        y: isMobile ? 10 : 10
       },
       lineWidth: 1,
       tickLength: 0,
@@ -124,7 +125,7 @@ const initCharts = () => {
   const staggerOffset = isMobile ? 6 : 0;
 
   Highcharts.chart(teamTriesChart.value, {
-    chart: { type: "column", backgroundColor: "transparent", height: chartHeight, marginBottom: 140 },
+    chart: { type: "column", backgroundColor: "transparent", height: chartHeight, marginBottom: marginBottom },
     title: null,
     credits: { enabled: false },
     legend: { enabled: false },
@@ -134,7 +135,7 @@ const initCharts = () => {
       labels: {
         useHTML: true,
         rotation: 0,
-        style: { fontSize: "0px" }, // hide names
+        style: { fontSize: "0px" },
         formatter() {
           const team = teamStats[this.pos];
           const offset = isMobile && this.pos % 2 === 1 ? staggerOffset : 0;
@@ -142,7 +143,7 @@ const initCharts = () => {
                     <img src="${team.flag}" alt="${team.name}" width="${flagWidth}" style="height:auto;" />
                   </div>`;
         },
-        y: 10, // flags below axis
+        y: 10,
       },
       lineWidth: 1,
       tickLength: 0,
