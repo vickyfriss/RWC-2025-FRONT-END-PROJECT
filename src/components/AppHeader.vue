@@ -14,7 +14,7 @@
     <v-spacer />
 
     <!-- Desktop Navigation -->
-    <div v-if="display.mdAndUp" class="nav-wrapper">
+    <div v-show="display.mdAndUp" class="nav-wrapper">
       <template v-if="$route.path !== '/'">
         <v-btn text class="nav-btn" @click="$router.push('/')">Back to Home</v-btn>
       </template>
@@ -51,8 +51,8 @@
 
     <!-- Mobile Hamburger -->
     <v-app-bar-nav-icon
-      v-if="!display.mdAndUp"
-      @click="drawer = true"
+      v-show="display.smAndDown"
+      @click="drawer = !drawer"
     />
 
     <!-- Mobile Drawer -->
@@ -60,7 +60,9 @@
       v-model="drawer"
       temporary
       right
+      app
       class="mobile-drawer"
+      style="z-index: 2000;"
     >
       <v-list dense>
         <template v-if="$route.path !== '/'">
@@ -151,7 +153,7 @@ export default {
   padding: 0 28px;
   border-bottom: 1px solid #b3d1e8;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  z-index: 1000;
+  z-index: 1500;
 }
 
 .logo-wrapper {
@@ -171,7 +173,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 20px;
-  margin-right: 10px; /* small margin on right */
+  margin-right: 10px;
 }
 
 .nav-btn {
@@ -186,14 +188,16 @@ export default {
   color: #c20d2d;
 }
 
-/* Mobile drawer */
 .mobile-drawer .v-list-item-title {
   font-weight: 600;
-  margin-right: 10px;
 }
 
-/* Responsive adjustments */
+/* Hide desktop menu on small screens */
 @media (max-width: 960px) {
+  .nav-wrapper {
+    display: none;
+  }
+
   .header-appbar {
     flex-wrap: wrap;
     height: auto;
