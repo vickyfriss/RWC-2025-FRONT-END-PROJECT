@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="pa-0 ma-0 w-full">
     <!-- Global Header -->
-    <AppHeader />
+    
 
     <v-container fluid class="py-12 px-4">
       <!-- Header Wrapper for spacing -->

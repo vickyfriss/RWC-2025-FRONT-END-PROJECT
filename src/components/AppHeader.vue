@@ -53,53 +53,59 @@
     <v-app-bar-nav-icon v-if="isSmallScreen" @click="drawer = !drawer" />
   </v-app-bar>
 
-  <!-- Mobile Drawer (overlay for small/xs screens) -->
+  <!-- Mobile Drawer -->
   <v-navigation-drawer
-    v-if="isSmallScreen"
-    v-model="drawer"
     temporary
-    right
-    width="250"
-    style="z-index: 3000;"
+    v-if="isSmallScreen"
+    temprary
+    v-model="drawer"
+    location = top
+    width= 300
+    hide-overlay
+    elevation="3"
+    class="mobile-drawer"
   >
-    <v-list dense>
-      <template v-if="$route.path !== '/'">
-        <v-list-item @click="$router.push('/'); drawer=false">
-          <v-list-item-title>Back to Home</v-list-item-title>
-        </v-list-item>
-      </template>
 
-      <template v-else>
-        <v-list-item @click="scrollTo('countries'); drawer=false">
-          <v-list-item-title>Pools</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="scrollTo('map'); drawer=false">
-          <v-list-item-title>Venues</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="scrollTo('stats'); drawer=false">
-          <v-list-item-title>Statistics</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="scrollTo('final'); drawer=false">
-          <v-list-item-title>Champions</v-list-item-title>
-        </v-list-item>
-      </template>
 
-      <v-divider class="my-2"></v-divider>
+    <v-sheet class="drawer-sheet" rounded="lg">
+      <v-list dense>
+        <template v-if="$route.path !== '/'">
+          <v-list-item @click="$router.push('/'); drawer=false">
+            <v-list-item-title>Back to Home</v-list-item-title>
+          </v-list-item>
+        </template>
+        <template v-else>
+          <v-list-item @click="scrollTo('countries'); drawer=false">
+            <v-list-item-title>Pools</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="scrollTo('map'); drawer=false">
+            <v-list-item-title>Venues</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="scrollTo('stats'); drawer=false">
+            <v-list-item-title>Statistics</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="scrollTo('final'); drawer=false">
+            <v-list-item-title>Champions</v-list-item-title>
+          </v-list-item>
+        </template>
 
-      <template v-if="user">
-        <v-list-item @click="$router.push('/profile'); drawer=false">
-          <v-list-item-title>Profile</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="logout">
-          <v-list-item-title>Logout</v-list-item-title>
-        </v-list-item>
-      </template>
-      <template v-else>
-        <v-list-item @click="$router.push('/login'); drawer=false">
-          <v-list-item-title>Login</v-list-item-title>
-        </v-list-item>
-      </template>
-    </v-list>
+        <v-divider class="my-2"></v-divider>
+
+        <template v-if="user">
+          <v-list-item @click="$router.push('/profile'); drawer=false">
+            <v-list-item-title>Profile</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logout">
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item>
+        </template>
+        <template v-else>
+          <v-list-item @click="$router.push('/login'); drawer=false">
+            <v-list-item-title>Login</v-list-item-title>
+          </v-list-item>
+        </template>
+      </v-list>
+    </v-sheet>
   </v-navigation-drawer>
 </template>
 
@@ -135,7 +141,6 @@ export default {
       drawer.value = false;
     };
 
-    // Computed property for small/xs screens
     const isSmallScreen = computed(() => display.xs.value || display.sm.value);
 
     return { drawer, display, user, logout, scrollTo, isSmallScreen };
@@ -183,8 +188,19 @@ export default {
   color: #c20d2d;
 }
 
-.mobile-drawer .v-list-item-title {
-  font-weight: 600;
+/* Mobile Drawer */
+.mobile-drawer {
+  width: 300px !important;        /* narrow width */
+  max-height: auto;                /* grow with content */
+  overflow-y: auto;                /* scroll if content is too tall */
+  margin: 0 auto;                  /* center horizontally if desired */
+  left: auto !important;           /* override full-width left */
+  right: 16px !important;          /* align with hamburger */
+  border-radius: 8px;
+}
+
+.drawer-sheet {
+  padding: 16px 0;
 }
 
 /* Hide desktop nav on small screens */
