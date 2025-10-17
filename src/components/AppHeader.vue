@@ -49,16 +49,16 @@
       </v-btn>
     </div>
 
-    <!-- Hamburger Icon (small screens only) -->
-    <v-app-bar-nav-icon v-show="display.smAndDown" @click="drawer = true" />
+    <!-- Hamburger Icon (small/xs screens only) -->
+    <v-app-bar-nav-icon v-if="isSmallScreen" @click="drawer = !drawer" />
   </v-app-bar>
 
-  <!-- Mobile Drawer (overlay) -->
+  <!-- Mobile Drawer (overlay for small/xs screens) -->
   <v-navigation-drawer
+    v-if="isSmallScreen"
     v-model="drawer"
     temporary
     right
-    app
     width="250"
     style="z-index: 3000;"
   >
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useDisplay } from "vuetify";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -116,6 +116,7 @@ export default {
     const display = useDisplay();
     const user = ref(null);
 
+    // Auth state listener
     onAuthStateChanged(auth, (u) => (user.value = u));
 
     const logout = () => {
@@ -134,7 +135,10 @@ export default {
       drawer.value = false;
     };
 
-    return { drawer, display, user, logout, scrollTo };
+    // Computed property for small/xs screens
+    const isSmallScreen = computed(() => display.xs.value || display.sm.value);
+
+    return { drawer, display, user, logout, scrollTo, isSmallScreen };
   },
 };
 </script>
@@ -179,12 +183,11 @@ export default {
   color: #c20d2d;
 }
 
-/* Drawer menu titles */
 .mobile-drawer .v-list-item-title {
   font-weight: 600;
 }
 
-/* Hide desktop menu on small screens */
+/* Hide desktop nav on small screens */
 @media (max-width: 960px) {
   .nav-wrapper {
     display: none;

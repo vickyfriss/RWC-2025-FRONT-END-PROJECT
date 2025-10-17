@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="white" app flat class="header-appbar">
+  <v-app-bar color="#cce0f5" app flat class="header-appbar">
     <!-- Logo -->
     <div class="logo-wrapper">
       <a href="https://www.rugbyworldcup.com/2025" target="_blank" rel="noopener">
@@ -14,13 +14,14 @@
     <v-spacer />
 
     <!-- Desktop Navigation -->
-    <div v-if="display.mdAndUp" class="nav-wrapper">
+    <div v-show="display.mdAndUp" class="nav-wrapper">
       <template v-if="$route.path !== '/'">
         <v-btn text class="nav-btn" @click="$router.push('/')">Back to Home</v-btn>
       </template>
       <template v-else>
         <v-btn text class="nav-btn" @click="scrollTo('countries')">Pools</v-btn>
         <v-btn text class="nav-btn" @click="scrollTo('map')">Venues</v-btn>
+        <v-btn text class="nav-btn" @click="scrollTo('stats')">Statistics</v-btn>
         <v-btn text class="nav-btn" @click="scrollTo('final')">Champions</v-btn>
       </template>
 
@@ -48,60 +49,62 @@
       </v-btn>
     </div>
 
-    <!-- Mobile Hamburger -->
-    <v-app-bar-nav-icon
-      v-if="!display.mdAndUp"
-      @click="drawer = true"
-    />
-
-    <!-- Mobile Drawer -->
-    <v-navigation-drawer
-      v-model="drawer"
-      temporary
-      right
-      class="mobile-drawer"
-    >
-      <v-list dense>
-        <template v-if="$route.path !== '/'">
-          <v-list-item @click="$router.push('/'); drawer=false">
-            <v-list-item-title>Back to Home</v-list-item-title>
-          </v-list-item>
-        </template>
-
-        <template v-else>
-          <v-list-item @click="scrollTo('countries')">
-            <v-list-item-title>Pools</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="scrollTo('map')">
-            <v-list-item-title>Venues</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="scrollTo('final')">
-            <v-list-item-title>Champions</v-list-item-title>
-          </v-list-item>
-        </template>
-
-        <v-divider></v-divider>
-
-        <template v-if="user">
-          <v-list-item @click="$router.push('/profile'); drawer=false">
-            <v-list-item-title>Profile</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="logout">
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item>
-        </template>
-        <template v-else>
-          <v-list-item @click="$router.push('/login'); drawer=false">
-            <v-list-item-title>Login</v-list-item-title>
-          </v-list-item>
-        </template>
-      </v-list>
-    </v-navigation-drawer>
+    <!-- Hamburger Icon (small/xs screens only) -->
+    <v-app-bar-nav-icon v-if="isSmallScreen" @click="drawer = !drawer" />
   </v-app-bar>
+
+  <!-- Mobile Drawer (overlay for small/xs screens) -->
+  <v-navigation-drawer
+    v-if="isSmallScreen"
+    v-model="drawer"
+    temporary
+    right
+    width="250"
+    style="z-index: 3000;"
+  >
+    <v-list dense>
+      <template v-if="$route.path !== '/'">
+        <v-list-item @click="$router.push('/'); drawer=false">
+          <v-list-item-title>Back to Home</v-list-item-title>
+        </v-list-item>
+      </template>
+
+      <template v-else>
+        <v-list-item @click="scrollTo('countries'); drawer=false">
+          <v-list-item-title>Pools</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="scrollTo('map'); drawer=false">
+          <v-list-item-title>Venues</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="scrollTo('stats'); drawer=false">
+          <v-list-item-title>Statistics</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="scrollTo('final'); drawer=false">
+          <v-list-item-title>Champions</v-list-item-title>
+        </v-list-item>
+      </template>
+
+      <v-divider class="my-2"></v-divider>
+
+      <template v-if="user">
+        <v-list-item @click="$router.push('/profile'); drawer=false">
+          <v-list-item-title>Profile</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout">
+          <v-list-item-title>Logout</v-list-item-title>
+        </v-list-item>
+      </template>
+      <template v-else>
+        <v-list-item @click="$router.push('/login'); drawer=false">
+          <v-list-item-title>Login</v-list-item-title>
+        </v-list-item>
+      </template>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useDisplay } from "vuetify";
 import { auth } from "../firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -113,9 +116,8 @@ export default {
     const display = useDisplay();
     const user = ref(null);
 
-    onAuthStateChanged(auth, (u) => {
-      user.value = u;
-    });
+    // Auth state listener
+    onAuthStateChanged(auth, (u) => (user.value = u));
 
     const logout = () => {
       signOut(auth).then(() => {
@@ -133,7 +135,10 @@ export default {
       drawer.value = false;
     };
 
-    return { drawer, display, user, logout, scrollTo };
+    // Computed property for small/xs screens
+    const isSmallScreen = computed(() => display.xs.value || display.sm.value);
+
+    return { drawer, display, user, logout, scrollTo, isSmallScreen };
   },
 };
 </script>
@@ -145,9 +150,9 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 0 28px;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #b3d1e8;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  z-index: 1000;
+  z-index: 1500;
 }
 
 .logo-wrapper {
@@ -159,8 +164,6 @@ export default {
 .logo-img {
   height: 60px;
   width: auto;
-  display: block;
-  object-fit: contain;
 }
 
 .nav-wrapper {
@@ -173,7 +176,6 @@ export default {
   text-transform: uppercase;
   font-weight: 600;
   font-size: 0.95rem;
-  letter-spacing: 0.5px;
   color: #111;
 }
 
@@ -181,18 +183,22 @@ export default {
   color: #c20d2d;
 }
 
-/* Mobile drawer */
 .mobile-drawer .v-list-item-title {
   font-weight: 600;
 }
 
-/* Responsive adjustments */
+/* Hide desktop nav on small screens */
 @media (max-width: 960px) {
+  .nav-wrapper {
+    display: none;
+  }
+
   .header-appbar {
     flex-wrap: wrap;
     height: auto;
     padding: 12px 16px;
   }
+
   .logo-img {
     height: 50px;
   }
