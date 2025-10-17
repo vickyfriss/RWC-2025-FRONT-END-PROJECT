@@ -1,7 +1,7 @@
 <template>
-  <v-container class="d-flex justify-center align-center" style="height: 80vh;">
-    <v-card width="400" class="pa-4">
-      <v-card-title class="text-h5 justify-center">Login</v-card-title>
+  <v-container class="login-container" fluid>
+    <v-card width="400" class="login-card pa-6">
+      <v-card-title class="text-h5 justify-center login-title">Login</v-card-title>
       <v-card-text>
         <v-form ref="loginForm" @submit.prevent="loginUser">
           <!-- Email -->
@@ -29,7 +29,7 @@
           </p>
 
           <!-- Login button -->
-          <v-btn type="submit" color="primary" block class="mt-4">Login</v-btn>
+          <v-btn type="submit" color="primary" block class="mt-4 login-btn">Login</v-btn>
 
           <!-- Register button with message -->
           <div class="text-center mt-4">
@@ -88,8 +88,31 @@ export default {
 };
 </script>
 
-<style>
-/* Red background for invalid input */
+<style scoped>
+/* Full-screen light blue background */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e6f0fa;
+  padding: 20px;
+}
+
+/* Card styling */
+.login-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Card title */
+.login-title {
+  font-weight: 700;
+  color: #1976d2;
+}
+
+/* Invalid input field */
 .field-invalid input {
   background-color: #ffe6e6 !important;
 }
@@ -102,7 +125,14 @@ export default {
   margin-bottom: 0.5rem;
 }
 
-/* Optional: make all buttons same height */
+/* Buttons styling */
+.login-btn {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fff !important;
+}
+
+/* Optional: make all buttons consistent height */
 .v-btn {
   height: 40px;
 }

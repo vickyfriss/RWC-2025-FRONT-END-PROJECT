@@ -1,75 +1,57 @@
 <template>
-  <v-app>
-    <!-- Global Header -->
-    <AppHeader />
+  <v-main>
+    <v-container fluid class="pa-0 main-container">
 
-    <!-- Main content -->
-    <v-main>
-      <v-container fluid class="pa-0">
+      <!-- Hero Section / Title -->
+      <section id="hero" class="hero-section">
+        <v-row justify="center" class="text-center">
+          <v-col cols="12" md="8">
+            <h1 class="hero-title">
+              2025 Women's Rugby World Cup
+            </h1>
+            <p class="hero-subtitle">
+              Discover the pools, matches, and host cities for the biggest tournament of the year.
+            </p>
+            <v-btn color="red darken-2" class="mt-6 hero-btn" large @click="scrollTo('countries')">
+              Explore Pools
+            </v-btn>
+          </v-col>
+        </v-row>
+      </section>
 
-        <!-- Hero Section / Title -->
-        <section id="hero" class="hero-section">
-          <v-row justify="center" class="text-center">
-            <v-col cols="12" md="8">
-              <h1 class="hero-title">
-                2025 Women's Rugby World Cup
-              </h1>
-              <p class="hero-subtitle">
-                Discover the pools, matches, and host cities for the biggest tournament of the year.
-              </p>
-              <v-btn color="red darken-2" class="mt-6 hero-btn" large @click="scrollTo('countries')">
-                Explore Pools
-              </v-btn>
-            </v-col>
-          </v-row>
-        </section>
+      <!-- Countries Section -->
+      <section id="countries" class="section countries-section">
+        <Countries @go-to-country="goToCountry" />
+      </section>
 
-        <!-- Countries Section -->
-        <section id="countries" class="section countries-section">
-          <Countries @go-to-country="goToCountry" />
-        </section>
+      <!-- Map Section -->
+      <section id="map" class="section map-section">
+        <div v-if="mapAvailable">
+          <Map />
+        </div>
+        <div v-else class="text-center my-4">
+          <p>⚠️ Map unavailable, please check back later.</p>
+        </div>
+      </section>
 
-        <!-- Map Section -->
-        <section id="map" class="section map-section">
-          <div v-if="mapAvailable">
-            <Map />
-          </div>
-          <div v-else class="text-center my-4">
-            <p>⚠️ Map unavailable, please check back later.</p>
-          </div>
-        </section>
+      <!-- Tournament Statistics Section -->
+      <section id="stats" class="section stats-section">
+        <p class="stats-subtitle">
+          Team & player performance at a glance
+        </p>
+        <StatsCharts />
+      </section>
 
-        <!-- 🆕 Stats Charts Section -->
-        <section id="stats" class="section stats-section">
-          <v-container>
-            <v-row justify="center" class="mb-4">
-              <v-col cols="12" md="8" class="text-center">
-                <h2 class="stats-title">Tournament Statistics</h2>
-                <p class="stats-subtitle">
-                  Explore team and player performance through interactive charts.
-                </p>
-              </v-col>
-            </v-row>
-            <v-row justify="center">
-              <v-col cols="12" md="10">
-                <StatsCharts />
-              </v-col>
-            </v-row>
-          </v-container>
-        </section>
+      <!-- Final Game Section -->
+      <section id="final" class="section final-section">
+        <EnglandChampion />
+      </section>
 
-        <!-- Final Game Section -->
-        <section id="final" class="section final-section">
-          <EnglandChampion />
-        </section>
-
-      </v-container>
-    </v-main>
-  </v-app>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
-import AppHeader from "../components/AppHeader.vue";
 import Countries from "./Pools.vue";
 import Map from "./Map.vue";
 import StatsCharts from "./StatsCharts.vue";
@@ -79,7 +61,7 @@ import { onAuthStateChanged } from "firebase/auth";
 
 export default {
   name: "Home",
-  components: { AppHeader, Countries, Map, EnglandChampion },
+  components: { Countries, Map, StatsCharts, EnglandChampion },
   data() {
     return {
       mapAvailable: true,
@@ -109,14 +91,6 @@ export default {
     goToCountry(name) {
       this.$router.push(`/country/${name}`);
     },
-    goToStats() {
-      this.$router.push('/stats'); // ✅ Navigate to the StatsCharts page
-    },
-    logout() {
-      auth.signOut().then(() => {
-        this.userEmail = "";
-      });
-    },
     scrollToHash(hash) {
       if (!hash) return;
       const el = document.querySelector(hash);
@@ -141,6 +115,11 @@ export default {
 </script>
 
 <style scoped>
+/* Light blue background for the whole page */
+.main-container {
+  background-color: #e6f0fa;
+}
+
 /* Hero Section */
 .hero-section {
   min-height: 35vh;
@@ -172,58 +151,31 @@ export default {
   padding: 0.75rem 1.5rem;
 }
 
-/* Sections with reduced spacing */
+/* General Section Styling */
 .section {
   padding-top: 40px;
   padding-bottom: 40px;
 }
 
-/* Specific per-section adjustments */
-.countries-section {
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
-
-.map-section {
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
-
-/* 🆕 Stats Section */
-.stats-section {
-  background-color: #fafafa;
-  text-align: center;
-}
-
-.stats-title {
-  font-weight: 700;
-  font-size: 1.8rem;
-  color: #222;
-}
-
-.stats-subtitle {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 1rem;
-}
-
-.stats-btn {
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
+/* Countries, Map, Final sections */
+.countries-section,
+.map-section,
 .final-section {
   padding-top: 30px;
   padding-bottom: 30px;
 }
 
-/* Headings */
-h2 {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  font-size: 1.5rem;
+/* Stats Section */
+.stats-section {
   text-align: center;
+  padding: 40px 20px;
+}
+
+.stats-subtitle {
+  font-size: clamp(1.8rem, 2vw, 1.2rem);
+  color: #1976d2;
+  font-weight: 600;
+  margin-bottom: 25px;
 }
 
 /* Responsive adjustments */
@@ -251,23 +203,5 @@ h2 {
     padding-top: 20px;
     padding-bottom: 20px;
   }
-
-  .stats-section {
-  background-color: #f8f8f8;
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
-
-.stats-title {
-  font-weight: 700;
-  font-size: 1.8rem;
-  color: #222;
-}
-
-.stats-subtitle {
-  color: #555;
-  font-size: 1rem;
-}
-
 }
 </style>

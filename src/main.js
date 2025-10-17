@@ -1,10 +1,10 @@
+// main.js
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
 // ✅ Tailwind CSS
 import "./assets/tailwind.css";
-import "vuetify/styles";
 
 // Vuetify
 import "vuetify/styles";
@@ -12,7 +12,7 @@ import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 
-// ✅ MDI Icons (needed for hamburger, menus, etc.)
+// ✅ MDI Icons (for hamburger menu, menus, etc.)
 import "@mdi/font/css/materialdesignicons.css";
 
 // Leaflet
@@ -20,12 +20,11 @@ import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LMarker, LPopup, LGeoJson } from "@vue-leaflet/vue-leaflet";
 import L from "leaflet";
 
-// Import marker assets
+// Fix default Leaflet markers
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-// Fix default Leaflet markers
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
@@ -44,6 +43,7 @@ const vuetify = createVuetify({
   },
 });
 
+// Create Vue app
 const app = createApp(App);
 
 // Register global Leaflet components

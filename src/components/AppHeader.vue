@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="white" app flat class="header-appbar">
+  <v-app-bar color="#cce0f5" app flat class="header-appbar">
     <!-- Logo -->
     <div class="logo-wrapper">
       <a href="https://www.rugbyworldcup.com/2025" target="_blank" rel="noopener">
@@ -21,6 +21,7 @@
       <template v-else>
         <v-btn text class="nav-btn" @click="scrollTo('countries')">Pools</v-btn>
         <v-btn text class="nav-btn" @click="scrollTo('map')">Venues</v-btn>
+        <v-btn text class="nav-btn" @click="scrollTo('stats')">Statistics</v-btn>
         <v-btn text class="nav-btn" @click="scrollTo('final')">Champions</v-btn>
       </template>
 
@@ -69,13 +70,16 @@
         </template>
 
         <template v-else>
-          <v-list-item @click="scrollTo('countries')">
+          <v-list-item @click="scrollTo('countries'); drawer=false">
             <v-list-item-title>Pools</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="scrollTo('map')">
+          <v-list-item @click="scrollTo('map'); drawer=false">
             <v-list-item-title>Venues</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="scrollTo('final')">
+          <v-list-item @click="scrollTo('stats'); drawer=false">
+            <v-list-item-title>Statistics</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="scrollTo('final'); drawer=false">
             <v-list-item-title>Champions</v-list-item-title>
           </v-list-item>
         </template>
@@ -145,7 +149,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 0 28px;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #b3d1e8;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   z-index: 1000;
 }
@@ -167,6 +171,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 20px;
+  margin-right: 10px; /* small margin on right */
 }
 
 .nav-btn {
@@ -184,6 +189,7 @@ export default {
 /* Mobile drawer */
 .mobile-drawer .v-list-item-title {
   font-weight: 600;
+  margin-right: 10px;
 }
 
 /* Responsive adjustments */
