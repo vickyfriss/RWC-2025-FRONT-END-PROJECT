@@ -64,12 +64,12 @@ export default [
     },
     {
       city: 'York',
-      stadium: 'MKM Stadium',
+      stadium: 'York Community Stadium',
       coords: [53.745853, -0.368915],
       capacity: 8510,
       matches: { poolStage: 6, quarterFinals: 0, semiFinals: 0, final: 0 },
       link: 'https://www.rugbyworldcup.com/2025/en/cities-and-venues/york',
-      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQcV7y5e8tM2prtIkquS0Lvkw532oDvqs-SAa40wEWqh9dY6o-SN48IO8mIWP7n4Gdlsek&usqp=CAU'
+      image: 'https://www.hathaway-roofing.co.uk/images/project/lner-community-stadium-york-aerial-townpix-yt(2).jpg'
     }
   ];
   
