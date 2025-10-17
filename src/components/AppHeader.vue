@@ -49,61 +49,58 @@
       </v-btn>
     </div>
 
-    <!-- Mobile Hamburger -->
-    <v-app-bar-nav-icon
-      v-show="display.smAndDown"
-      @click="drawer = !drawer"
-    />
-
-    <!-- Mobile Drawer -->
-    <v-navigation-drawer
-      v-model="drawer"
-      temporary
-      right
-      app
-      class="mobile-drawer"
-      style="z-index: 2000;"
-    >
-      <v-list dense>
-        <template v-if="$route.path !== '/'">
-          <v-list-item @click="$router.push('/'); drawer=false">
-            <v-list-item-title>Back to Home</v-list-item-title>
-          </v-list-item>
-        </template>
-
-        <template v-else>
-          <v-list-item @click="scrollTo('countries'); drawer=false">
-            <v-list-item-title>Pools</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="scrollTo('map'); drawer=false">
-            <v-list-item-title>Venues</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="scrollTo('stats'); drawer=false">
-            <v-list-item-title>Statistics</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="scrollTo('final'); drawer=false">
-            <v-list-item-title>Champions</v-list-item-title>
-          </v-list-item>
-        </template>
-
-        <v-divider></v-divider>
-
-        <template v-if="user">
-          <v-list-item @click="$router.push('/profile'); drawer=false">
-            <v-list-item-title>Profile</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="logout">
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item>
-        </template>
-        <template v-else>
-          <v-list-item @click="$router.push('/login'); drawer=false">
-            <v-list-item-title>Login</v-list-item-title>
-          </v-list-item>
-        </template>
-      </v-list>
-    </v-navigation-drawer>
+    <!-- Hamburger Icon (small screens only) -->
+    <v-app-bar-nav-icon v-show="display.smAndDown" @click="drawer = true" />
   </v-app-bar>
+
+  <!-- Mobile Drawer (overlay) -->
+  <v-navigation-drawer
+    v-model="drawer"
+    temporary
+    right
+    app
+    width="250"
+    style="z-index: 3000;"
+  >
+    <v-list dense>
+      <template v-if="$route.path !== '/'">
+        <v-list-item @click="$router.push('/'); drawer=false">
+          <v-list-item-title>Back to Home</v-list-item-title>
+        </v-list-item>
+      </template>
+
+      <template v-else>
+        <v-list-item @click="scrollTo('countries'); drawer=false">
+          <v-list-item-title>Pools</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="scrollTo('map'); drawer=false">
+          <v-list-item-title>Venues</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="scrollTo('stats'); drawer=false">
+          <v-list-item-title>Statistics</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="scrollTo('final'); drawer=false">
+          <v-list-item-title>Champions</v-list-item-title>
+        </v-list-item>
+      </template>
+
+      <v-divider class="my-2"></v-divider>
+
+      <template v-if="user">
+        <v-list-item @click="$router.push('/profile'); drawer=false">
+          <v-list-item-title>Profile</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout">
+          <v-list-item-title>Logout</v-list-item-title>
+        </v-list-item>
+      </template>
+      <template v-else>
+        <v-list-item @click="$router.push('/login'); drawer=false">
+          <v-list-item-title>Login</v-list-item-title>
+        </v-list-item>
+      </template>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <script>
@@ -119,9 +116,7 @@ export default {
     const display = useDisplay();
     const user = ref(null);
 
-    onAuthStateChanged(auth, (u) => {
-      user.value = u;
-    });
+    onAuthStateChanged(auth, (u) => (user.value = u));
 
     const logout = () => {
       signOut(auth).then(() => {
@@ -165,22 +160,18 @@ export default {
 .logo-img {
   height: 60px;
   width: auto;
-  display: block;
-  object-fit: contain;
 }
 
 .nav-wrapper {
   display: flex;
   align-items: center;
   gap: 20px;
-  margin-right: 10px;
 }
 
 .nav-btn {
   text-transform: uppercase;
   font-weight: 600;
   font-size: 0.95rem;
-  letter-spacing: 0.5px;
   color: #111;
 }
 
@@ -188,6 +179,7 @@ export default {
   color: #c20d2d;
 }
 
+/* Drawer menu titles */
 .mobile-drawer .v-list-item-title {
   font-weight: 600;
 }
@@ -203,6 +195,7 @@ export default {
     height: auto;
     padding: 12px 16px;
   }
+
   .logo-img {
     height: 50px;
   }
