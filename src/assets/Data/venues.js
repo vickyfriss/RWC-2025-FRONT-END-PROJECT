@@ -69,7 +69,8 @@ export default [
       capacity: 8510,
       matches: { poolStage: 6, quarterFinals: 0, semiFinals: 0, final: 0 },
       link: 'https://www.rugbyworldcup.com/2025/en/cities-and-venues/york',
-      image: 'https://www.hathaway-roofing.co.uk/images/project/lner-community-stadium-york-aerial-townpix-yt(2).jpg'
+      image: 'https://www.hathaway-roofing.co.uk/images/project/lner-community-stadium-york-aerial-townpix-yt%282%29.jpg'
+
     }
   ];
   
