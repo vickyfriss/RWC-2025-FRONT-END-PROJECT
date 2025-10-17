@@ -3,33 +3,14 @@
     <div class="charts-grid">
       <!-- Top Players Chart -->
       <div class="chart-card">
-        <h2 class="section-title">Top 20 Players</h2>
-        <div class="mb-4 text-center">
-          <select v-model="selectedPlayerMetric" @change="renderTopPlayersChart" class="border rounded px-2 py-1"
-          style="font-size: clamp(0.75rem, 1vw, 1rem);">
-            <option value="points">Points</option>
-            <option value="tries">Tries</option>
-            <option value="conversions">Conversions</option>
-          </select>
-        </div>
+        <h2 class="section-title">Top 20 Players by Points</h2>
         <div ref="pointsChart" class="chart-container"></div>
       </div>
 
-      <!-- Team Stats Chart -->
+      <!-- Team Tries Chart -->
       <div class="chart-card">
-        <h2 class="section-title">Team Stats Comparison</h2>
-        <div class="mb-4 text-center">
-          <select v-model="selectedTeamMetric" @change="renderTeamChart" class="border rounded px-2 py-1"
-          style="font-size: clamp(0.75rem, 1vw, 1rem);">
-            <option value="points">Points</option>
-            <option value="tries">Tries</option>
-            <option value="runs">Runs</option>
-            <option value="conversions">Conversions</option>
-            <option value="offloads">Offloads</option>
-            <option value="tackles">Tackles</option>
-          </select>
-        </div>
-        <div ref="teamChart" class="chart-container"></div>
+        <h2 class="section-title">Team Tries Comparison</h2>
+        <div ref="teamTriesChart" class="chart-container"></div>
       </div>
     </div>
   </div>
@@ -38,23 +19,21 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
 import Highcharts from "highcharts";
-import { playerStats, teamStats as rawTeamStats } from "../assets/Data/Stats.js";
+import { playerStats } from "../assets/Data/Stats.js";
 import { groups } from "../assets/Data/PoolsData.js";
 
 const pointsChart = ref(null);
-const teamChart = ref(null);
+const teamTriesChart = ref(null);
 
-const selectedPlayerMetric = ref("points");
-const selectedTeamMetric = ref("points");
-
-// Merge flags from groups into teamStats
-const teamStats = rawTeamStats.map((team) => {
-  const groupTeam = groups.flatMap(g => g.teams).find(t => t.name === team.name);
-  return {
-    ...team,
-    flag: groupTeam ? groupTeam.flag : "",
-  };
-});
+const teamStats = groups
+  .flatMap((g) =>
+    g.teams.map((t) => ({
+      name: t.name,
+      flag: t.flag,
+      tries: t.triesFor,
+    }))
+  )
+  .sort((a, b) => b.tries - a.tries);
 
 const teamColors = {
   England: "#ffffff",
@@ -77,25 +56,28 @@ const teamColors = {
 
 Highcharts.setOptions({ lang: { locale: "en" } });
 
-// --- Top Players Chart ---
-const renderTopPlayersChart = () => {
-  if (!pointsChart.value) return;
-  const isMobile = window.innerWidth < 640;
-  const chartHeight = isMobile ? 250 : 420;
-  const marginBottom = isMobile ? 90 : 140;
+const initCharts = () => {
+  if (!pointsChart.value || !teamTriesChart.value) return;
 
+  const isMobile = window.innerWidth < 640;
+  const chartHeight = isMobile ? 280 : 420;
+  const marginBottom = isMobile ? 20 : 140; // <-- dynamic bottom margin
+
+  // ---- Top Players Chart ----
   const topPlayers = [...playerStats]
-    .sort((a, b) => b[selectedPlayerMetric.value] - a[selectedPlayerMetric.value])
+    .sort((a, b) => b.points - a.points)
     .slice(0, 20);
 
   const categories = topPlayers.map((p) => {
     const parts = p.name.split(" ");
-    if (parts.length > 1) return parts[0][0].toUpperCase() + ". " + parts.slice(1).join(" ");
+    if (parts.length > 1) {
+      return parts[0][0].toUpperCase() + ". " + parts.slice(1).join(" ");
+    }
     return p.name;
   });
 
-  const data = topPlayers.map((p) => ({
-    y: p[selectedPlayerMetric.value],
+  const pointsData = topPlayers.map((p) => ({
+    y: p.points,
     color: p.team === "England" ? "#ffffff" : teamColors[p.team] || "#7cb5ec",
     borderColor: p.team === "England" ? "#d62728" : null,
     borderWidth: p.team === "England" ? 2 : 0,
@@ -107,25 +89,25 @@ const renderTopPlayersChart = () => {
       type: "column", 
       backgroundColor: "transparent", 
       height: chartHeight, 
-      marginBottom,
+      marginBottom: isMobile ? 95 : 140,
     },
     title: null,
     credits: { enabled: false },
     legend: { enabled: false },
-    plotOptions: { column: { borderRadius: 4, pointPadding: isMobile ? 0.04 : 0.08, groupPadding: isMobile ?  0.04 : 0.08 } },
+    plotOptions: { column: { borderRadius: 4, pointPadding: isMobile ? 0.05 : 0.1, groupPadding: isMobile ? 0.05 : 0.1 } },
     xAxis: {
       categories,
       labels: { 
         rotation: isMobile ? -80 : -80, 
         style: { fontSize: isMobile ? "10px" : "clamp(11px,1vw,15px)" }, 
-        y: isMobile ? 5 : 10
+        y: isMobile ? 10 : 10
       },
       lineWidth: 1,
       tickLength: 0,
       title: { text: null },
     },
     yAxis: { visible: true, gridLineWidth: 1, lineWidth: 1, tickLength: 5, title: { text: null }, labels: { enabled: false } },
-    series: [{ name: selectedPlayerMetric.value.toUpperCase(), data }],
+    series: [{ name: "# of Points", data: pointsData }],
     tooltip: {
       useHTML: true,
       style: { fontSize: isMobile ? "10px" : "clamp(12px,1vw,15px)" },
@@ -137,33 +119,25 @@ const renderTopPlayersChart = () => {
       },
     },
   });
-};
 
-// --- Team Chart ---
-const renderTeamChart = () => {
-  if (!teamChart.value) return;
-  const isMobile = window.innerWidth < 640;
-  const chartHeight = isMobile ? 250 : 420;
-  const marginBottom = isMobile ? 30 : 140;
+  // ---- Team Tries Chart ----
   const flagWidth = isMobile ? 18 : 28;
   const staggerOffset = isMobile ? 6 : 0;
 
-  const sortedTeams = [...teamStats].sort((a, b) => b[selectedTeamMetric.value] - a[selectedTeamMetric.value]);
-
-  Highcharts.chart(teamChart.value, {
-    chart: { type: "column", backgroundColor: "transparent", height: chartHeight, marginBottom },
+  Highcharts.chart(teamTriesChart.value, {
+    chart: { type: "column", backgroundColor: "transparent", height: chartHeight, marginBottom: marginBottom },
     title: null,
     credits: { enabled: false },
     legend: { enabled: false },
-    plotOptions: { column: { borderRadius: 4, pointPadding: isMobile ? 0.04 : 0.08, groupPadding: isMobile ?  0.04 : 0.08 } },
+    plotOptions: { column: { borderRadius: 4, pointPadding: isMobile ? 0.05 : 0.1, groupPadding: isMobile ? 0.05 : 0.1 } },
     xAxis: {
-      categories: sortedTeams.map((t) => t.name),
+      categories: teamStats.map((t) => t.name),
       labels: {
         useHTML: true,
         rotation: 0,
         style: { fontSize: "0px" },
         formatter() {
-          const team = sortedTeams[this.pos];
+          const team = teamStats[this.pos];
           const offset = isMobile && this.pos % 2 === 1 ? staggerOffset : 0;
           return `<div style="display:flex;justify-content:center;margin-top:${offset}px;">
                     <img src="${team.flag}" alt="${team.name}" width="${flagWidth}" style="height:auto;" />
@@ -176,19 +150,13 @@ const renderTeamChart = () => {
       title: { text: null },
     },
     yAxis: { visible: true, gridLineWidth: 1, lineWidth: 1, tickLength: 5, title: { text: null }, labels: { enabled: false } },
-    series: [{
-      name: selectedTeamMetric.value.toUpperCase(),
-      color: "#1976d2",
-      data: sortedTeams.map((t) => ({ y: t[selectedTeamMetric.value], team: t }))
-    }],
+    series: [{ name: "# of Tries", color: "#1976d2", data: teamStats.map((t) => ({ y: t.tries, team: t })) }],
     tooltip: {
       useHTML: true,
       style: { fontSize: isMobile ? "10px" : "clamp(12px,1vw,15px)" },
       formatter() {
         const t = this.point.team;
-        let html = `<b>${t.name}</b><br>`;
-        for (const key in t) if (key !== "name" && key !== "flag") html += `<strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${t[key]}<br>`;
-        return html;
+        return `<b>${t.name}</b><br>Tries: ${t.tries}`;
       },
     },
   });
@@ -196,12 +164,8 @@ const renderTeamChart = () => {
 
 onMounted(async () => {
   await nextTick();
-  renderTopPlayersChart();
-  renderTeamChart();
-  window.addEventListener("resize", () => {
-    renderTopPlayersChart();
-    renderTeamChart();
-  });
+  initCharts();
+  window.addEventListener("resize", () => initCharts());
 });
 </script>
 
@@ -226,7 +190,7 @@ onMounted(async () => {
 }
 .chart-container {
   width: 100%;
-  min-height: 250px;
+  min-height: 300px;
   overflow: visible;
 }
 @media (min-width: 1024px) {
