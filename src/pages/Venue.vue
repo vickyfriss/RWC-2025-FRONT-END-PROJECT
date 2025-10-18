@@ -216,7 +216,7 @@ export default {
 @media (max-width: 768px) {
   .match-grid {
     grid-template-columns: 1fr 24px auto 24px 1fr;
-    gap: 4px;
+    gap: 6px; /* slightly more gap overall */
   }
   .match-grid .score {
     font-size: 1.1rem;
@@ -224,13 +224,14 @@ export default {
   .match-grid .match-flag {
     width: 20px;
     height: 12px;
+    margin: 0 4px; /* add horizontal margin around flag */
   }
 }
 
 @media (max-width: 480px) {
   .match-grid {
     grid-template-columns: 1fr 20px auto 20px 1fr;
-    gap: 2px;
+    gap: 4px; /* slightly more gap overall */
   }
   .match-grid .score {
     font-size: 1rem;
@@ -238,6 +239,7 @@ export default {
   .match-grid .match-flag {
     width: 16px;
     height: 10px;
+    margin: 0 4px; /* horizontal space around flag */
   }
 }
 </style>
