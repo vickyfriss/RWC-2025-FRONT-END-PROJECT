@@ -135,29 +135,27 @@ export default {
 }
 
 /* Header Wrapper spacing */
-/* Space above the Pool title */
 .header-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 4rem;  /* increased space from top */
+  margin-top: 4rem;
   margin-bottom: 2rem;
 }
 
 @media (max-width: 768px) {
   .header-wrapper {
-    margin-top: 5rem; /* more space on tablets */
+    margin-top: 5rem;
     margin-bottom: 3rem;
   }
 }
 
 @media (max-width: 480px) {
   .header-wrapper {
-    margin-top: 6rem; /* more space on small phones */
+    margin-top: 6rem;
     margin-bottom: 4rem;
   }
 }
-
 
 /* Card Styling */
 .pool-card {
@@ -172,7 +170,7 @@ export default {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  table-layout: fixed; /* equal column widths */
+  table-layout: fixed;
 }
 
 .standings-table th {
@@ -258,10 +256,11 @@ export default {
 }
 
 /* Responsive */
+/* Responsive */
 @media (max-width: 768px) {
   .match-grid {
     grid-template-columns: 1fr 24px 60px 24px 1fr;
-    gap: 4px;
+    gap: 8px; /* slightly bigger gap */
   }
   .match-grid .score {
     font-size: 1.1rem;
@@ -269,13 +268,14 @@ export default {
   .match-grid .match-flag {
     width: 20px;
     height: 12px;
+    margin: 0 8px; /* increased space */
   }
 }
 
 @media (max-width: 480px) {
   .match-grid {
     grid-template-columns: 1fr 20px 50px 20px 1fr;
-    gap: 2px;
+    gap: 6px; /* slightly bigger gap */
   }
   .match-grid .score {
     font-size: 1rem;
@@ -283,6 +283,7 @@ export default {
   .match-grid .match-flag {
     width: 16px;
     height: 10px;
+    margin: 0 12px; /* more space for small phones */
   }
 }
 </style>
