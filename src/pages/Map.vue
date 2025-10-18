@@ -233,4 +233,12 @@ export default {
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
+
+@media (max-width: 768px) {
+  .venue-map {
+    width: 95%;
+    margin: 0 auto;
+  }
+}
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 w-full mx-auto">
+  <div class="p-4 mx-auto content-wrapper">
     <!-- Filter Buttons -->
     <v-row justify="center" class="mb-4">
       <v-btn
@@ -109,6 +109,13 @@ export default {
 </script>
 
 <style scoped>
+
+.content-wrapper {
+  max-width: 95%; /* or 90% for a bit more space */
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* Card Styles */
 .group-card {
   padding: 6px;

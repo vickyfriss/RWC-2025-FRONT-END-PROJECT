@@ -30,7 +30,7 @@
             <v-row dense justify="center">
               <v-col
                 v-for="match in venueMatches"
-                :key="match.id + match.stage"
+                :key="match.id + match.stage + match.date"
                 cols="12"
                 sm="10"
                 md="8"
@@ -84,27 +84,40 @@ export default {
     };
   },
   mounted() {
-    const city = this.$route.params.city;
-    this.venue = venues.find((v) => v.city.toLowerCase() === city.toLowerCase());
+    const city = this.$route.params.city.toLowerCase();
+    this.venue = venues.find((v) => v.city.toLowerCase() === city);
 
-    if (this.venue) {
-      const normalize = (str) =>
-        str.toLowerCase().replace(/[’']/g, "'").replace(/,/g, "").trim();
-
-      const poolMatches = groups.flatMap((pool) =>
-        pool.matches.map((m) => ({ ...m, poolName: pool.name }))
-      );
-      const knockoutMatches = knockoutGroup.flatMap((stage) =>
-        stage.matches.map((m) => ({ ...m }))
-      );
-      const allMatches = [...poolMatches, ...knockoutMatches];
-
-      this.venueMatches = allMatches.filter((match) =>
-        normalize(match.stadium).includes(normalize(this.venue.stadium))
-      );
-    } else {
+    if (!this.venue) {
       console.warn("Venue not found:", city);
+      return;
     }
+
+    const normalize = (str) =>
+      str.toLowerCase().replace(/[’']/g, "'").replace(/,/g, "").trim();
+
+    // Flatten all matches
+    const poolMatches = groups.flatMap((pool) =>
+      pool.matches.map((m) => ({ ...m, poolName: pool.name }))
+    );
+    const knockoutMatches = knockoutGroup.flatMap((stage) =>
+      stage.matches.map((m) => ({ ...m }))
+    );
+    const allMatches = [...poolMatches, ...knockoutMatches];
+
+    // Filter by city (everything after comma in stadium)
+    let venueMatches = allMatches.filter((match) => {
+      const matchCity = match.stadium.split(",")[1]?.trim();
+      return normalize(matchCity) === normalize(this.venue.city);
+    });
+
+    // Remove exact duplicates by teamA, teamB, date
+    const seen = new Set();
+    this.venueMatches = venueMatches.filter((match) => {
+      const key = `${match.teamA}-${match.teamB}-${match.date}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
   },
   methods: {
     getFlag(teamName) {

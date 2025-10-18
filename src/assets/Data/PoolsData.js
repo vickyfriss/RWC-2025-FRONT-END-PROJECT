@@ -12,7 +12,7 @@ export const groups = [
       { id: 2, teamA: "Australia", scoreA: 73, scoreB: 0, teamB: "Samoa", date: "23 August 2025", stadium: "Salford Community Stadium, Manchester" },
       { id: 3, teamA: "England", scoreA: 92, scoreB: 3, teamB: "Samoa", date: "30 August 2025", stadium: "Franklin's Gardens, Northampton" },
       { id: 4, teamA: "USA", scoreA: 31, scoreB: 31, teamB: "Australia", date: "30 August 2025", stadium: "York Community Stadium, York" },
-      { id: 5, teamA: "England", scoreA: 47, scoreB: 7, teamB: "Australia", date: "6 September 2025", stadium: "Brighton & Hove Albion Stadium, Brighton" },
+      { id: 5, teamA: "England", scoreA: 47, scoreB: 7, teamB: "Australia", date: "6 September 2025", stadium: "Brighton & Hove Albion Stadium, Brighton & Hove" },
       { id: 6, teamA: "USA", scoreA: 60, scoreB: 0, teamB: "Samoa", date: "6 September 2025", stadium: "York Community Stadium, York" },
     ]
   },
@@ -47,7 +47,7 @@ export const groups = [
       { id: 3, teamA: "Ireland", scoreA: 43, scoreB: 27, teamB: "Spain", date: "31 August 2025", stadium: "Franklin's Gardens, Northampton" },
       { id: 4, teamA: "New Zealand", scoreA: 62, scoreB: 19, teamB: "Japan", date: "31 August 2025", stadium: "Sandy Park, Exeter" },
       { id: 5, teamA: "Japan", scoreA: 29, scoreB: 21, teamB: "Spain", date: "7 September 2025", stadium: "York Community Stadium, York" },
-      { id: 6, teamA: "New Zealand", scoreA: 40, scoreB: 0, teamB: "Ireland", date: "7 September 2025", stadium: "Brighton & Hove Albion Stadium, Brighton" },
+      { id: 6, teamA: "New Zealand", scoreA: 40, scoreB: 0, teamB: "Ireland", date: "7 September 2025", stadium: "Brighton & Hove Albion Stadium, Brighton & Hove" },
     ]
   },
   {
