@@ -84,41 +84,46 @@ export default {
     };
   },
   mounted() {
-    const city = this.$route.params.city.toLowerCase();
-    this.venue = venues.find((v) => v.city.toLowerCase() === city);
+  const city = this.$route.params.city.toLowerCase();
+  this.venue = venues.find((v) => v.city.toLowerCase() === city);
 
-    if (!this.venue) {
-      console.warn("Venue not found:", city);
-      return;
-    }
+  if (!this.venue) {
+    console.warn("Venue not found:", city);
+    return;
+  }
 
-    const normalize = (str) =>
-      str.toLowerCase().replace(/[’']/g, "'").replace(/,/g, "").trim();
+  const normalize = (str) =>
+    str.toLowerCase().replace(/[’']/g, "'").replace(/,/g, "").trim();
 
-    // Flatten all matches
-    const poolMatches = groups.flatMap((pool) =>
-      pool.matches.map((m) => ({ ...m, poolName: pool.name }))
-    );
-    const knockoutMatches = knockoutGroup.flatMap((stage) =>
-      stage.matches.map((m) => ({ ...m }))
-    );
-    const allMatches = [...poolMatches, ...knockoutMatches];
+  // Flatten all matches
+  const poolMatches = groups.flatMap((pool) =>
+    pool.matches.map((m) => ({ ...m, poolName: pool.name }))
+  );
+  const knockoutMatches = knockoutGroup.flatMap((stage) =>
+    stage.matches.map((m) => ({ ...m }))
+  );
+  const allMatches = [...poolMatches, ...knockoutMatches];
 
-    // Filter by city (everything after comma in stadium)
-    let venueMatches = allMatches.filter((match) => {
-      const matchCity = match.stadium.split(",")[1]?.trim();
-      return normalize(matchCity) === normalize(this.venue.city);
-    });
+  // Filter by city (everything after comma in stadium)
+  let venueMatches = allMatches.filter((match) => {
+    const matchCity = match.stadium.split(",")[1]?.trim();
+    return normalize(matchCity) === normalize(this.venue.city);
+  });
 
-    // Remove exact duplicates by teamA, teamB, date
-    const seen = new Set();
-    this.venueMatches = venueMatches.filter((match) => {
-      const key = `${match.teamA}-${match.teamB}-${match.date}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  },
+  // Remove exact duplicates by teamA, teamB, date
+  const seen = new Set();
+  venueMatches = venueMatches.filter((match) => {
+    const key = `${match.teamA}-${match.teamB}-${match.date}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Sort matches chronologically by date
+  venueMatches.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  this.venueMatches = venueMatches;
+},
   methods: {
     getFlag(teamName) {
       for (const pool of groups) {
